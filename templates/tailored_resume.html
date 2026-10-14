@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Tailored Resume - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-narrow">
+        
+        <!-- Header Banner -->
+        <div class="results-top-bar" style="margin-bottom: 2rem;">
+            <div class="role-meta-box">
+                <div class="pill-tag" style="margin-bottom: 0.5rem;">
+                    <span class="pill-dot"></span>
+                    <span>APPLICATION OPTIMIZATION</span>
+                </div>
+                <h1 class="page-title" style="font-size: 1.85rem;">AI-Tailored Resume Optimization</h1>
+                <p class="page-desc">Targeting: <strong>{{ analysis.job_meta.title }}</strong> at <strong>{{ analysis.job_meta.company or "Target Role" }}</strong></p>
+            </div>
+            <div class="candidate-meta-box">
+                {% if tailored.is_demo_mode %}
+                    <span class="chip chip-missing" style="margin-bottom: 0.5rem; display: inline-block;">⚡ Fallback Mode (Deterministic Rules)</span>
+                {% else %}
+                    <span class="chip chip-matched" style="margin-bottom: 0.5rem; display: inline-block;">✨ Live Gemini AI Generated</span>
+                {% endif %}
+                <div>
+                    <a href="{{ url_for('download_resume') }}" class="btn btn-primary" id="btn-download-resume-top">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>Download DOCX Resume</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if tailored.warning %}
+        <div class="alert alert-warning">
+            <span>⚡ {{ tailored.warning }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Tailoring Content Grid -->
+        <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
+            
+            <!-- Section 1: Optimized Professional Summary -->
+            <div class="card">
+                <div class="card-header-flex">
+                    <div class="card-title-icon">
+                        <span class="icon-bubble">✨</span>
+                        <div>
+                            <h3>Targeted Professional Summary</h3>
+                            <p class="text-muted">Framed to highlight your genuine qualifications for this role</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="copyToClipboard('tailored-summary-text', this)">
+                        <span>Copy Summary</span>
+                    </button>
+                </div>
+
+                <div style="padding: 1.25rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                    <p id="tailored-summary-text" style="font-size: 1.05rem; line-height: 1.7; color: var(--color-text-main); margin: 0;">{{ tailored.tailored_summary }}</p>
+                </div>
+            </div>
+
+            <!-- Section 2: Strategic Skill Categorization -->
+            <div class="card">
+                <div class="card-header-simple">
+                    <h3>Strategic Skill Categorization</h3>
+                    <p class="text-muted">Recommended grouping to maximize ATS parsing efficiency</p>
+                </div>
+
+                <div class="grid-2">
+                    {% for group in tailored.skill_emphasis %}
+                        <div style="padding: 1rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                            <h4 style="margin-bottom: 0.65rem; font-size: 0.95rem;">{{ group.category }}</h4>
+                            <div class="chips-wrapper">
+                                {% for s in group.skills %}
+                                    <span class="skill-chip chip-matched">✓ {{ s }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Section 3: Bullet Point Improvements -->
+            <div class="card">
+                <div class="card-header-simple">
+                    <h3>Project &amp; Experience Bullet Point Optimizations</h3>
+                    <p class="text-muted">Transforms draft descriptions into measurable, action-oriented statements without inventing facts</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    {% for b in tailored.bullet_improvements %}
+                        <div class="bullet-comparison-card">
+                            <div class="bullet-original">
+                                <strong class="text-sm" style="display: block; margin-bottom: 0.25rem;">ORIGINAL DRAFT:</strong>
+                                {{ b.original_context }}
+                            </div>
+                            <div class="bullet-revised">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                                    <strong class="text-sm" style="color: var(--color-primary);">⭐ TAILORED REVISION:</strong>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="copyText('{{ b.tailored_bullet | escape }}', this)">Copy</button>
+                                </div>
+                                &bull; {{ b.tailored_bullet }}
+                            </div>
+                            <div class="bullet-rationale">
+                                💡 <strong>Why this works:</strong> {{ b.rationale }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Next Actions Bar -->
+        <div class="next-steps-banner">
+            <div class="ns-content">
+                <h3>Export Your Application</h3>
+                <p>Generate a targeted cover letter or download the tailored resume in Word format.</p>
+            </div>
+            <div class="ns-actions">
+                <a href="{{ url_for('download_resume') }}" class="btn btn-primary">Download DOCX</a>
+                <a href="{{ url_for('cover_letter') }}" class="btn btn-secondary">Generate Cover Letter</a>
+                <a href="{{ url_for('results') }}" class="btn btn-outline">Back to Score</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

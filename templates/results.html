@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}Alignment Results - HireLens{% endblock %}
+
+{% block content %}
+<div class="results-wrapper">
+    <div class="container">
+        
+        <!-- Top Role Meta Banner -->
+        <div class="results-top-bar">
+            <div class="role-meta-box">
+                <span class="role-badge">Target Opportunity</span>
+                <h2 class="target-title">{{ analysis.job_meta.title }}</h2>
+                <span class="target-company">🏢 {{ analysis.job_meta.company or "Role Requirements" }}</span>
+            </div>
+            <div class="candidate-meta-box">
+                <span class="candidate-name">👤 {{ resume.contact.name }}</span>
+                <span class="candidate-sub">{{ resume.contact.email or "No email detected" }} &bull; {{ resume.word_count }} words analyzed</span>
+            </div>
+        </div>
+
+        <!-- 1. Overall Alignment Score & 4-Factor Breakdown -->
+        <div class="score-overview-grid">
+            
+            <!-- Left: Main Score Gauge -->
+            <div class="card score-main-card text-center">
+                <span class="card-eyebrow">RESUME-JOB ALIGNMENT</span>
+                
+                <div class="score-circle-container">
+                    <div class="score-dial-large score-{{ analysis.score_color }}">
+                        <span class="score-number">{{ analysis.score }}</span>
+                        <span class="score-percent-sign">%</span>
+                    </div>
+                </div>
+
+                <div class="score-status-badge badge-{{ analysis.score_color }}">
+                    {{ analysis.score_tier }}
+                </div>
+
+                <p class="score-summary-text">{{ analysis.score_summary }}</p>
+
+                <div class="score-disclaimer-box">
+                    <small>ℹ️ <strong>Honest Assessment:</strong> {{ analysis.disclaimer }} This estimate helps you identify skill gaps and does not guarantee employer hiring decisions.</small>
+                </div>
+            </div>
+
+            <!-- Right: 4-Factor Weighted Breakdown -->
+            <div class="card breakdown-card">
+                <div class="card-header-simple">
+                    <h3>Explainable Alignment Breakdown</h3>
+                    <p class="text-muted">Weighted scoring methodology based on deterministic heuristics</p>
+                </div>
+
+                <div class="breakdown-list">
+                    <!-- Factor 1 -->
+                    <div class="breakdown-item">
+                        <div class="breakdown-labels">
+                            <span class="factor-name"><strong>1. Required Skill Match</strong> (Weight: 40%)</span>
+                            <span class="factor-value">{{ analysis.breakdown.skill_score }}%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar-fill" style="width: {{ analysis.breakdown.skill_score }}%;"></div>
+                        </div>
+                        <span class="factor-hint">{{ analysis.skills.matched_count }} of {{ analysis.skills.total_job_skills }} core skills identified from job posting</span>
+                    </div>
+
+                    <!-- Factor 2 -->
+                    <div class="breakdown-item">
+                        <div class="breakdown-labels">
+                            <span class="factor-name"><strong>2. Keyword Alignment</strong> (Weight: 25%)</span>
+                            <span class="factor-value">{{ analysis.breakdown.keyword_score }}%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar-fill" style="width: {{ analysis.breakdown.keyword_score }}%;"></div>
+                        </div>
+                        <span class="factor-hint">Frequency overlap of role-specific terminology and technical keywords</span>
+                    </div>
+
+                    <!-- Factor 3 -->
+                    <div class="breakdown-item">
+                        <div class="breakdown-labels">
+                            <span class="factor-name"><strong>3. Semantic TF-IDF Fit</strong> (Weight: 20%)</span>
+                            <span class="factor-value">{{ analysis.breakdown.semantic_score }}%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar-fill" style="width: {{ analysis.breakdown.semantic_score }}%;"></div>
+                        </div>
+                        <span class="factor-hint">Contextual cosine similarity between resume language and job description</span>
+                    </div>
+
+                    <!-- Factor 4 -->
+                    <div class="breakdown-item">
+                        <div class="breakdown-labels">
+                            <span class="factor-name"><strong>4. Experience &amp; Action Evidence</strong> (Weight: 15%)</span>
+                            <span class="factor-value">{{ analysis.breakdown.evidence_score }}%</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar-fill" style="width: {{ analysis.breakdown.evidence_score }}%;"></div>
+                        </div>
+                        <span class="factor-hint">Action verbs, project scope, and quantifiable accomplishment evidence</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 2. Matched Skills & 3. Missing / Critical Job Skills -->
+        <div class="section-skills-grid">
+            
+            <!-- Matched Skills -->
+            <div class="card skill-analysis-card">
+                <div class="skill-card-header">
+                    <div class="title-with-badge">
+                        <h3>Matched Skills</h3>
+                        <span class="count-badge chip-matched">{{ analysis.skills.matched | length }} Detected</span>
+                    </div>
+                    <p class="text-muted">Skills present in both your resume and the target job description.</p>
+                </div>
+
+                <div class="chips-wrapper">
+                    {% if analysis.skills.matched %}
+                        {% for skill in analysis.skills.matched %}
+                            <span class="skill-chip chip-matched">
+                                <span class="chip-icon">✓</span>
+                                <strong>{{ skill.name }}</strong>
+                                <span class="chip-cat">{{ skill.category }}</span>
+                            </span>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No exact skill matches detected. Review the missing skills list below.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Missing / Critical Job Skills -->
+            <div class="card skill-analysis-card">
+                <div class="skill-card-header">
+                    <div class="title-with-badge">
+                        <h3>Missing / Critical Job Skills</h3>
+                        <span class="count-badge chip-missing">{{ analysis.skills.missing | length }} Gaps</span>
+                    </div>
+                    <p class="text-muted">Highlighted in job requirements but not found in your current resume.</p>
+                </div>
+
+                <div class="ethical-advisory-box">
+                    <span class="advisory-icon">🛡️</span>
+                    <span><strong>Ethical Guidance:</strong> Add missing skills to your resume ONLY if you genuinely have coursework or practical experience with them. Never fabricate skills.</span>
+                </div>
+
+                <div class="chips-wrapper">
+                    {% if analysis.skills.missing %}
+                        {% for skill in analysis.skills.missing %}
+                            <span class="skill-chip chip-missing">
+                                <span class="chip-icon">!</span>
+                                <strong>{{ skill.name }}</strong>
+                                <span class="chip-cat">{{ skill.category }}</span>
+                            </span>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-success" style="font-weight: 600;">Outstanding! Your resume covers all key skills identified in the job description.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 4. Top Job Keywords & Terminology & 5. ATS-Style Format Checks -->
+        <div class="grid-2 recs-keyword-grid" style="margin-bottom: 2rem;">
+            
+            <!-- Keywords Density -->
+            <div class="card keyword-card">
+                <div class="card-header-simple">
+                    <h3>Top Job Keywords &amp; Terminology</h3>
+                    <p class="text-muted">Key phrases extracted from the job posting and whether they appear in your resume</p>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Keyword</th>
+                                <th>Job Frequency</th>
+                                <th>In Resume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in analysis.keywords.top_job_keywords %}
+                                <tr>
+                                    <td><strong>{{ item[0] }}</strong></td>
+                                    <td>{{ item[1] }}x</td>
+                                    <td>
+                                        {% set found = false %}
+                                        {% for m in analysis.keywords.matched %}
+                                            {% if m.keyword == item[0] %}
+                                                <span class="chip chip-matched">✓ Present</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% for miss in analysis.keywords.missing %}
+                                            {% if miss.keyword == item[0] %}
+                                                <span class="chip chip-missing">Missing</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 5. ATS-Style Structural Checks -->
+            <div class="card ats-checks-card">
+                <div class="card-header-simple">
+                    <h3>ATS Compatibility Diagnostics</h3>
+                    <p class="text-muted">Document structure and parser readiness</p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                        <span style="font-size: 1.25rem;">{% if resume.contact.name %}✅{% else %}⚠️{% endif %}</span>
+                        <div>
+                            <strong>Contact Header</strong>
+                            <p class="text-sm text-muted">{% if resume.contact.name %}Identified candidate: {{ resume.contact.name }}{% else %}Candidate name could not be reliably detected in header{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                        <span style="font-size: 1.25rem;">{% if resume.contact.email %}✅{% else %}⚠️{% endif %}</span>
+                        <div>
+                            <strong>Email &amp; Direct Contact</strong>
+                            <p class="text-sm text-muted">{% if resume.contact.email %}{{ resume.contact.email }}{% else %}No standard email address detected{% endif %}</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                        <span style="font-size: 1.25rem;">{% if resume.sections %}✅{% else %}ℹ️{% endif %}</span>
+                        <div>
+                            <strong>Section Segmentation</strong>
+                            <p class="text-sm text-muted">{{ resume.sections | length }} distinct sections recognized (Education, Experience, Skills, Projects, etc.)</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                        <span style="font-size: 1.25rem;">{% if resume.word_count >= 150 %}✅{% else %}⚠️{% endif %}</span>
+                        <div>
+                            <strong>Content Length</strong>
+                            <p class="text-sm text-muted">{{ resume.word_count }} words parsed. Optimal concise resume length for early-career roles is typically 300–600 words.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 6. Personalized Recommendations (Strategic Action Plan) -->
+        <div class="card" style="margin-bottom: 2.5rem; padding: 2rem;">
+            <div class="card-header-simple">
+                <h3>Personalized Recommendations</h3>
+                <p class="text-muted">Prioritized steps to improve your resume for this opportunity</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                {% for rec in analysis.recommendations %}
+                    <div style="padding: 1.25rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <span class="count-badge" style="background: var(--color-primary-light); color: var(--color-primary);">{{ rec.badge }}</span>
+                            <h4 style="margin: 0; font-size: 1.05rem;">{{ rec.title }}</h4>
+                        </div>
+                        <p class="text-sm" style="margin: 0;">{{ rec.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Next Actions Bar -->
+        <div class="next-steps-banner">
+            <div class="ns-content">
+                <h3>Take Your Application Further</h3>
+                <p>Generate an AI-tailored draft or craft a targeted cover letter matching this job posting.</p>
+            </div>
+            <div class="ns-actions">
+                <a href="{{ url_for('tailor') }}" class="btn btn-primary" id="btn-goto-tailor">
+                    <span>Tailor Resume</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="{{ url_for('cover_letter') }}" class="btn btn-secondary" id="btn-goto-cover-letter">
+                    <span>Generate Cover Letter</span>
+                </a>
+                <a href="{{ url_for('analyzer') }}" class="btn btn-outline">Analyze Another Job</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

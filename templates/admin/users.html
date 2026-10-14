@@ -1,0 +1,131 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}User Management - HireLens Admin{% endblock %}
+{% block page_title %}Candidate User Accounts{% endblock %}
+
+{% block content %}
+
+<!-- Search & Filter Bar -->
+<div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+    <form method="GET" action="{{ url_for('admin.admin_users') }}" id="admin-users-filter-form">
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <input
+                type="text"
+                name="search"
+                id="admin-user-search"
+                class="form-input"
+                style="flex: 2; min-width: 220px;"
+                placeholder="Search candidate by name or email..."
+                value="{{ search }}"
+            >
+            <select name="sort" class="form-input" style="flex: 1; min-width: 170px;" id="admin-user-sort">
+                <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>Sort: Registration Date</option>
+                <option value="full_name" {% if sort_by == 'full_name' %}selected{% endif %}>Sort: Name</option>
+                <option value="email" {% if sort_by == 'email' %}selected{% endif %}>Sort: Email</option>
+                <option value="last_login" {% if sort_by == 'last_login' %}selected{% endif %}>Sort: Last Login</option>
+            </select>
+            <select name="order" class="form-input" style="flex: 1; min-width: 140px;" id="admin-user-order">
+                <option value="desc" {% if order == 'desc' %}selected{% endif %}>Newest First</option>
+                <option value="asc" {% if order == 'asc' %}selected{% endif %}>Oldest First</option>
+            </select>
+            <button type="submit" class="btn btn-primary" id="admin-user-filter-btn">Search</button>
+            {% if search %}
+            <a href="{{ url_for('admin.admin_users') }}" class="btn btn-outline" id="admin-user-clear-btn">Clear</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Users Table Card -->
+<div class="card" style="padding: 1.5rem;">
+    {% if search %}
+    <div style="margin-bottom: 1rem; font-size: 0.875rem;" class="text-muted">
+        Showing results for <strong>"{{ search }}"</strong> &bull; {{ pagination.total }} user(s) found
+    </div>
+    {% endif %}
+
+    {% if users %}
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Candidate Name</th>
+                    <th>Email Address</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th>Registered</th>
+                    <th>Last Active</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td class="text-muted text-sm">#{{ user.id }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.65rem;">
+                            <div class="admin-avatar" style="width: 28px; height: 28px; font-size: 0.75rem;">{{ user.full_name[0].upper() }}</div>
+                            <strong>{{ user.full_name }}</strong>
+                        </div>
+                    </td>
+                    <td class="text-muted">{{ user.email }}</td>
+                    <td>
+                        <span class="chip {% if user.account_status == 'active' %}chip-matched{% else %}chip-missing{% endif %}">
+                            {{ user.account_status | capitalize }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="chip" style="background: var(--color-surface-subtle); border: 1px solid var(--color-border); font-size: 0.75rem;">
+                            {{ user.role | capitalize }}
+                        </span>
+                    </td>
+                    <td class="text-muted text-sm">{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                    <td class="text-muted text-sm">
+                        {% if user.last_login %}
+                            {{ user.last_login.strftime('%b %d, %Y') }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.admin_user_detail', user_id=user.id) }}"
+                           class="btn btn-outline btn-sm"
+                           id="admin-view-user-{{ user.id }}">
+                            View Detail
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination.pages > 1 %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border-subtle);">
+        <div>
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('admin.admin_users', page=pagination.prev_num, search=search, sort=sort_by, order=order) }}"
+               class="btn btn-outline btn-sm" id="admin-users-prev">← Previous</a>
+            {% endif %}
+        </div>
+        <span class="text-sm text-muted">Page {{ pagination.page }} of {{ pagination.pages }} ({{ pagination.total }} users)</span>
+        <div>
+            {% if pagination.has_next %}
+            <a href="{{ url_for('admin.admin_users', page=pagination.next_num, search=search, sort=sort_by, order=order) }}"
+               class="btn btn-outline btn-sm" id="admin-users-next">Next →</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state-box">
+        <div class="empty-state-icon">👥</div>
+        <h4>{{ 'No users match your query' if search else 'No candidates registered yet' }}</h4>
+        <p>{{ 'Try a different search term or clear the filter.' if search else 'Registered candidate accounts will appear in this table.' }}</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

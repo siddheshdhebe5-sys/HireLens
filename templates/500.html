@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-narrow text-center">
+        <div class="card" style="padding: 3.5rem 2rem;">
+            <div class="step-num" style="font-size: 3.5rem; color: var(--color-danger);">500</div>
+            <h1 class="section-title">An Unexpected Error Occurred</h1>
+            <p class="section-desc" style="margin-bottom: 2rem;">Our system encountered an internal issue. Please try again or return to the home page.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('main.index') }}" class="btn btn-primary">Return Home</a>
+                <a href="{{ url_for('analyzer') }}" class="btn btn-secondary">Go to Analyzer</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

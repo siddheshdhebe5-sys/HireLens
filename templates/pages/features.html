@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Features - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="section-header text-center">
+            <span class="section-subtitle">PLATFORM CAPABILITIES</span>
+            <h1 class="section-title">Engineered for Honest Career Growth</h1>
+            <p class="section-desc">HireLens gives you the diagnostic tools to understand what applicant tracking systems and hiring managers look for in your resume.</p>
+        </div>
+
+        <!-- Varied Editorial Feature Layout -->
+        <div class="features-grid" style="margin-bottom: 3.5rem;">
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Resume-Job Alignment Scoring</h3>
+                <p>Computes an explainable score based on a transparent 4-part formula. Avoid guesswork and see exactly which areas contribute to your overall match.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>Explainable Formula</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Matching Keyword Analysis</h3>
+                <p>Compares technical terms, tools, libraries, and methodologies to highlight exact terminology overlaps between your resume and the posting.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>Keyword Frequency</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Missing-Skill Identification</h3>
+                <p>Identifies key technical requirements listed in the job post that aren't verified on your resume, paired with clear ethical guidance.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>Skill Gap Advisory</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>ATS-Style Compatibility Checks</h3>
+                <p>Audits section headings, contact formatting, date structures, and document layout to ensure standard ATS parsers can read your qualifications.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>Format Verification</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3>Personalized Recommendations</h3>
+                <p>Provides concrete rewrite advice for your summary and experience bullet points, emphasizing action verbs and measurable impact.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>Action-Oriented Rewrites</span>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🗂️</div>
+                <h3>Resume Analysis History</h3>
+                <p>Authenticated users can view and revisit past analyses. Compare how your resume scored against different companies and roles over time.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>Private History Tracking</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Trust Box Callout -->
+        <div class="trust-box text-center" style="max-width: 800px; margin: 0 auto 3rem;">
+            <h3>Our Anti-Fabrication Guarantee</h3>
+            <p style="margin: 0.75rem auto 1.5rem; max-width: 600px;">
+                HireLens will never generate fictitious work history, fabricate credentials, or suggest lying on your resume. We help you showcase your genuine abilities with maximum clarity.
+            </p>
+            <a href="{{ url_for('analyzer') }}" class="btn btn-primary">Try HireLens Now</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

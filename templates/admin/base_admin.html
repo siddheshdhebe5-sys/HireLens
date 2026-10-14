@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel - HireLens{% endblock %}</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Google Fonts: Manrope & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Shared CSS + Admin Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin-body">
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <div class="admin-brand">
+                    <div class="brand-icon" style="width: 32px; height: 32px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <circle cx="11" cy="14" r="3"/>
+                            <line x1="13.5" y1="16.5" x2="16.5" y2="19.5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="admin-brand-name">Hire<span class="brand-highlight">Lens</span></span>
+                        <span class="admin-brand-badge">FOUNDER ADMIN</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="admin-nav">
+                <ul class="admin-nav-list">
+                    <li>
+                        <a href="{{ url_for('admin.admin_dashboard') }}" class="admin-nav-link {% if request.endpoint == 'admin.admin_dashboard' %}active{% endif %}" id="admin-nav-dashboard">
+                            <span class="admin-nav-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.admin_users') }}" class="admin-nav-link {% if 'admin_user' in request.endpoint %}active{% endif %}" id="admin-nav-users">
+                            <span class="admin-nav-icon">👥</span>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.admin_analyses') }}" class="admin-nav-link {% if request.endpoint == 'admin.admin_analyses' %}active{% endif %}" id="admin-nav-analyses">
+                            <span class="admin-nav-icon">📋</span>
+                            <span>Analyses</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="admin-nav-divider"></div>
+
+                <ul class="admin-nav-list">
+                    <li>
+                        <a href="{{ url_for('main.index') }}" class="admin-nav-link" id="admin-nav-public" target="_blank">
+                            <span class="admin-nav-icon">🌐</span>
+                            <span>View Public Site</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin.admin_logout') }}" class="admin-nav-link admin-nav-logout" id="admin-nav-logout">
+                            <span class="admin-nav-icon">🚪</span>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Admin user info -->
+            <div class="admin-sidebar-footer">
+                <div class="admin-user-info">
+                    <div class="admin-avatar">{{ current_user.full_name[0].upper() if current_user.is_authenticated else 'A' }}</div>
+                    <div class="admin-user-details">
+                        <span class="admin-user-name">{{ current_user.full_name if current_user.is_authenticated else 'Administrator' }}</span>
+                        <span class="admin-user-role">Founder Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Admin Content -->
+        <div class="admin-main">
+
+            <!-- Admin Top Bar -->
+            <div class="admin-topbar">
+                <button class="admin-sidebar-toggle" onclick="toggleAdminSidebar()" id="admin-sidebar-toggle" aria-label="Toggle sidebar">
+                    <span></span><span></span><span></span>
+                </button>
+                <h2 class="admin-page-title">{% block page_title %}Admin{% endblock %}</h2>
+                <div class="admin-topbar-right">
+                    <span class="admin-topbar-badge">Founder Session</span>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            <div class="admin-flash-area">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} fade-in" role="alert">
+                            <div class="alert-icon">{% if category == 'danger' %}⚠️{% elif category == 'success' %}✅{% else %}ℹ️{% endif %}</div>
+                            <div class="alert-message">{{ message }}</div>
+                            <button type="button" class="alert-close" onclick="this.parentElement.remove();">&times;</button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- Page Content -->
+            <div class="admin-content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+    function toggleAdminSidebar() {
+        document.getElementById('admin-sidebar').classList.toggle('admin-sidebar-collapsed');
+    }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

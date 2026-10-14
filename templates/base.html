@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HireLens - Your Skills. A Brighter Tomorrow.{% endblock %}</title>
+    <meta name="description" content="HireLens - Distinctive AI career assistant helping college students and job seekers compare resumes with job descriptions, uncover skill gaps, and improve applications.">
+    
+    <!-- Google Fonts: Manrope (Editorial Heading) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Top Announcement / Mode Banner -->
+    {% if not is_ai_live %}
+    <div class="top-banner demo-banner">
+        <div class="container banner-content">
+            <span class="banner-badge">Demo Mode Active</span>
+            <span>Operating with deterministic NLP &amp; heuristic skill analysis. Add <code>GEMINI_API_KEY</code> in <code>.env</code> for live Gemini AI models.</span>
+        </div>
+    </div>
+    {% else %}
+    <div class="top-banner ai-live-banner">
+        <div class="container banner-content">
+            <span class="banner-badge badge-live">Gemini AI Connected</span>
+            <span>Powered by Google Gemini 2.5 Flash for high-accuracy ethical resume tailoring.</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation Header -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="{{ url_for('main.index') }}" class="brand-logo" id="nav-brand-logo">
+                <div class="brand-icon">
+                    <!-- Lens + Document Identity Symbol -->
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <circle cx="11" cy="14" r="3"/>
+                        <line x1="13.5" y1="16.5" x2="16.5" y2="19.5"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">Hire<span class="brand-highlight">Lens</span></span>
+                    <span class="brand-badge">CAREER ASSISTANT</span>
+                </div>
+            </a>
+
+            <nav class="site-nav" id="site-nav">
+                {% if current_user.is_authenticated %}
+                <!-- LOGGED IN NAV -->
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="{{ url_for('main.index') }}" class="nav-link" id="nav-home">Home</a></li>
+                    <li><a href="{{ url_for('user.dashboard') }}" class="nav-link" id="nav-dashboard">Dashboard</a></li>
+                    <li><a href="{{ url_for('analyzer') }}" class="nav-link" id="nav-analyze">Analyze Resume</a></li>
+                    <li><a href="{{ url_for('user.history') }}" class="nav-link" id="nav-history">History</a></li>
+                    <li><a href="{{ url_for('user.profile') }}" class="nav-link" id="nav-profile">Profile</a></li>
+                </ul>
+                <div class="nav-cta nav-auth-group">
+                    <span class="nav-user-greeting">👋 {{ current_user.full_name.split()[0] }}</span>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline btn-sm" id="nav-logout-btn">Logout</a>
+                </div>
+                {% else %}
+                <!-- LOGGED OUT NAV -->
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="{{ url_for('main.index') }}" class="nav-link" id="nav-home">Home</a></li>
+                    <li><a href="{{ url_for('main.how_it_works') }}" class="nav-link" id="nav-how-it-works">How It Works</a></li>
+                    <li><a href="{{ url_for('main.features') }}" class="nav-link" id="nav-features">Features</a></li>
+                    <li><a href="{{ url_for('main.pricing') }}" class="nav-link" id="nav-pricing">Pricing</a></li>
+                    <li><a href="{{ url_for('main.about') }}" class="nav-link" id="nav-about">About</a></li>
+                </ul>
+                <div class="nav-cta nav-auth-group">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-ghost btn-sm" id="nav-login-btn">Login</a>
+                    <a href="{{ url_for('auth.signup') }}" class="btn btn-outline btn-sm" id="nav-signup-btn">Sign Up</a>
+                    <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-sm" id="nav-analyze-btn">
+                        <span>Analyze Resume</span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                {% endif %}
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Flash Messages Container -->
+    <div class="container flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} fade-in" role="alert">
+                        <div class="alert-icon">
+                            {% if category == 'danger' %}
+                                ⚠️
+                            {% elif category == 'warning' %}
+                                ⚡
+                            {% elif category == 'success' %}
+                                ✅
+                            {% else %}
+                                ℹ️
+                            {% endif %}
+                        </div>
+                        <div class="alert-message">{{ message }}</div>
+                        <button type="button" class="alert-close" onclick="this.parentElement.remove();">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Privacy Banner -->
+    <div class="privacy-strip">
+        <div class="container privacy-inner">
+            <span class="privacy-icon">🔒</span>
+            <p><strong>Privacy Commitment:</strong> Your resume is processed strictly in-memory to calculate alignment scores. We do not store or share your uploaded documents. Do not upload sensitive personal identification.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="brand-logo footer-logo">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <circle cx="11" cy="14" r="3"/>
+                            <line x1="13.5" y1="16.5" x2="16.5" y2="19.5"/>
+                        </svg>
+                    </div>
+                    <span class="brand-name">Hire<span class="brand-highlight">Lens</span></span>
+                </div>
+                <p class="footer-desc">Your Skills. A Brighter Tomorrow. AI-powered career assistant helping college students and job seekers compare resumes with job postings and identify missing skills.</p>
+                <div class="ethical-tag">
+                    <span>🛡️ 100% Ethical AI: Zero Fabrication Guarantee</span>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                    <li><a href="{{ url_for('main.how_it_works') }}">How It Works</a></li>
+                    <li><a href="{{ url_for('main.features') }}">Features</a></li>
+                    <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
+                    <li><a href="{{ url_for('main.about') }}">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Account</h4>
+                <ul>
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('analyzer') }}">Analyze Resume</a></li>
+                    <li><a href="{{ url_for('user.history') }}">History</a></li>
+                    <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('auth.signup') }}">Sign Up</a></li>
+                    <li><a href="{{ url_for('analyzer') }}">Analyze Resume</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Transparency &amp; Legal</h4>
+                <p class="disclaimer-text">
+                    HireLens provides estimated alignment scores based on keyword analysis and natural language heuristics. It is not an official ATS screening algorithm nor a guarantee of interview selection or employment.
+                </p>
+                <ul style="margin-top: 1rem;">
+                    <li><a href="{{ url_for('main.about') }}#privacy">Privacy Policy</a></li>
+                    <li><a href="{{ url_for('main.about') }}#terms">Terms of Service</a></li>
+                    <li><a href="{{ url_for('main.about') }}#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container footer-bottom">
+            <p>&copy; 2026 HireLens. Your Skills. A Brighter Tomorrow. All rights reserved.</p>
+            <p>Designed for college students, freshers, and job seekers.</p>
+        </div>
+    </footer>
+
+    <!-- Vanilla JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

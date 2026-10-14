@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}My Profile - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-narrow">
+
+        <div style="margin-bottom: 2rem;">
+            <div class="pill-tag">
+                <span class="pill-dot"></span>
+                <span>ACCOUNT MANAGEMENT</span>
+            </div>
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-desc">Manage your account information, security credentials, and access tier.</p>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 2rem;">
+
+            <!-- Left: Profile Summary Card -->
+            <div class="card text-center" style="padding: 2.5rem 1.5rem;">
+                <div class="admin-avatar" style="width: 64px; height: 64px; font-size: 1.5rem; margin: 0 auto 1.25rem;">
+                    {{ current_user.full_name[0].upper() }}
+                </div>
+                <h3 style="margin-bottom: 0.25rem;">{{ current_user.full_name }}</h3>
+                <p class="text-muted text-sm" style="margin-bottom: 1.5rem;">{{ current_user.email }}</p>
+
+                <div style="display: flex; justify-content: center; gap: 2rem; padding: 1rem 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;">{{ analysis_count }}</div>
+                        <div class="text-sm text-muted">Analyses</div>
+                    </div>
+                    <div>
+                        <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;">Free Tier</div>
+                        <div class="text-sm text-muted">Current Plan</div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="chip chip-matched">Active Account</span>
+                </div>
+            </div>
+
+            <!-- Right: Edit Name -->
+            <div class="card" style="padding: 2rem;">
+                <div class="card-header-simple">
+                    <h3>Personal Information</h3>
+                    <p class="text-muted">Update your display name</p>
+                </div>
+                <form action="{{ url_for('user.update_profile') }}" method="POST" id="update-profile-form">
+                    <div class="form-group">
+                        <label for="full_name" class="form-label">Full Name</label>
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            class="form-input"
+                            value="{{ current_user.full_name }}"
+                            required
+                            minlength="2"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input
+                            type="email"
+                            class="form-input"
+                            value="{{ current_user.email }}"
+                            readonly
+                            style="background: var(--color-surface-subtle); cursor: not-allowed;"
+                            title="Email cannot be changed"
+                        >
+                        <span class="text-sm text-muted" style="display: block; margin-top: 0.25rem;">Email address cannot be changed directly for security reasons.</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="save-profile-btn">Save Changes</button>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- Change Password & Details -->
+        <div class="grid-2">
+
+            <!-- Change Password -->
+            <div class="card" style="padding: 2rem;">
+                <div class="card-header-simple">
+                    <h3>Change Password</h3>
+                    <p class="text-muted">Securely update your password</p>
+                </div>
+                <form action="{{ url_for('user.change_password') }}" method="POST" id="change-password-form">
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <div class="input-with-toggle">
+                            <input
+                                type="password"
+                                id="current_password"
+                                name="current_password"
+                                class="form-input"
+                                placeholder="Your current password"
+                                required
+                            >
+                            <button type="button" class="input-toggle-btn" onclick="togglePasswordVisibility('current_password', this)" aria-label="Toggle visibility">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <div class="input-with-toggle">
+                            <input
+                                type="password"
+                                id="new_password"
+                                name="new_password"
+                                class="form-input"
+                                placeholder="At least 8 characters"
+                                required
+                                minlength="8"
+                            >
+                            <button type="button" class="input-toggle-btn" onclick="togglePasswordVisibility('new_password', this)" aria-label="Toggle visibility">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <div class="input-with-toggle">
+                            <input
+                                type="password"
+                                id="confirm_password"
+                                name="confirm_password"
+                                class="form-input"
+                                placeholder="Repeat new password"
+                                required
+                            >
+                            <button type="button" class="input-toggle-btn" onclick="togglePasswordVisibility('confirm_password', this)" aria-label="Toggle visibility">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" id="change-password-btn">Update Password</button>
+                </form>
+            </div>
+
+            <!-- Account Details -->
+            <div class="card" style="padding: 2rem;">
+                <div class="card-header-simple">
+                    <h3>Account Security &amp; Activity</h3>
+                    <p class="text-muted">Account metadata and security status</p>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border-subtle);">
+                        <span class="text-muted">User ID</span>
+                        <strong>#{{ current_user.id }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border-subtle);">
+                        <span class="text-muted">Registered Date</span>
+                        <span>{{ current_user.created_at.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border-subtle);">
+                        <span class="text-muted">Last Login</span>
+                        <span>{% if current_user.last_login %}{{ current_user.last_login.strftime('%B %d, %Y at %I:%M %p') }}{% else %}Current Session{% endif %}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border-subtle);">
+                        <span class="text-muted">Password Security</span>
+                        <span class="text-success">PBKDF2 SHA-256 Hashed</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span class="text-muted">Data Isolation</span>
+                        <span class="chip chip-matched">Private &bull; Isolated</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('change-password-form').addEventListener('submit', function(e) {
+    const np = document.getElementById('new_password').value;
+    const cp = document.getElementById('confirm_password').value;
+    if (np !== cp) {
+        e.preventDefault();
+        alert('New passwords do not match.');
+    }
+});
+</script>
+{% endblock %}

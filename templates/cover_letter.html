@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Cover Letter - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-narrow">
+        
+        <!-- Header Banner -->
+        <div class="results-top-bar" style="margin-bottom: 2rem;">
+            <div class="role-meta-box">
+                <div class="pill-tag" style="margin-bottom: 0.5rem;">
+                    <span class="pill-dot"></span>
+                    <span>APPLICATION OUTREACH</span>
+                </div>
+                <h1 class="page-title" style="font-size: 1.85rem;">Customized Application Letter</h1>
+                <p class="page-desc">Position: <strong>{{ letter.job_title }}</strong> at <strong>{{ letter.company or "Hiring Team" }}</strong></p>
+            </div>
+            <div class="candidate-meta-box">
+                {% if letter.is_demo_mode %}
+                    <span class="chip chip-missing" style="margin-bottom: 0.5rem; display: inline-block;">⚡ Fallback Mode</span>
+                {% else %}
+                    <span class="chip chip-matched" style="margin-bottom: 0.5rem; display: inline-block;">✨ Live Gemini AI Generated</span>
+                {% endif %}
+                <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-copy-letter" onclick="copyToClipboard('letter-full-content', this)">
+                        <span>Copy Text</span>
+                    </button>
+                    <a href="{{ url_for('download_cover_letter') }}" class="btn btn-primary btn-sm" id="btn-download-pdf">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>Download PDF</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if letter.warning %}
+        <div class="alert alert-warning">
+            <span>⚡ {{ letter.warning }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Letter Paper Preview Document -->
+        <div class="doc-paper" style="margin-bottom: 2rem;">
+            
+            <!-- Applicant Letterhead -->
+            <div class="doc-header">
+                <h2 class="doc-applicant-name">{{ resume.contact.name }}</h2>
+                <div class="doc-contact-line">
+                    <span>{{ resume.contact.email or "applicant@email.com" }}</span>
+                    <span>&bull;</span>
+                    <span>{{ resume.contact.phone or "(555) 019-2834" }}</span>
+                    {% if resume.contact.linkedin %}
+                        <span>&bull;</span>
+                        <span>linkedin.com/in/{{ resume.contact.linkedin }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recipient & Subject Header -->
+            <div style="margin-bottom: 1.75rem;">
+                <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;" id="current-letter-date"></div>
+                <div style="font-size: 0.9375rem; margin-bottom: 1rem;">
+                    <strong>{{ letter.recipient or "Hiring Manager" }}</strong><br>
+                    <span>{{ letter.company or "Hiring Team" }}</span>
+                </div>
+                <div style="font-size: 1rem; color: var(--color-text-main);">
+                    <strong>RE: Application for {{ letter.job_title }} Position</strong>
+                </div>
+            </div>
+
+            <!-- Letter Body Content -->
+            <div id="letter-full-content" style="font-size: 1rem; line-height: 1.75; color: var(--color-text-main);">
+                {% for paragraph in letter.letter_content.split('\n\n') %}
+                    {% if paragraph.strip() %}
+                        <p style="margin-bottom: 1.25rem;">{{ paragraph.strip() }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <!-- Action Bar -->
+        <div class="next-steps-banner">
+            <div class="ns-content">
+                <a href="{{ url_for('tailor') }}" class="btn btn-outline btn-sm">← Back to Tailored Resume</a>
+                <a href="{{ url_for('results') }}" class="btn btn-outline btn-sm">← Back to Results</a>
+            </div>
+            <div class="ns-actions">
+                <button type="button" class="btn btn-outline" onclick="copyToClipboard('letter-full-content', this)">
+                    <span>Copy Text</span>
+                </button>
+                <a href="{{ url_for('download_cover_letter') }}" class="btn btn-primary" id="btn-download-pdf-bottom">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Formatted PDF</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateEl = document.getElementById('current-letter-date');
+        if (dateEl) {
+            const today = new Date();
+            dateEl.textContent = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}User Detail - HireLens Admin{% endblock %}
+{% block page_title %}Candidate Detail &bull; #{{ user.id }}{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('admin.admin_users') }}" class="btn btn-outline btn-sm">← Back to Candidate Users</a>
+</div>
+
+<div class="admin-two-col">
+
+    <!-- Left: User Info Card -->
+    <div>
+        <div class="card text-center" style="padding: 2.5rem 1.5rem; margin-bottom: 1.5rem;">
+            <div class="admin-avatar" style="width: 56px; height: 56px; font-size: 1.4rem; margin: 0 auto 1rem;">
+                {{ user.full_name[0].upper() }}
+            </div>
+            <h2>{{ user.full_name }}</h2>
+            <p class="text-muted text-sm">{{ user.email }}</p>
+            <div style="margin-top: 0.75rem;">
+                <span class="chip {% if user.account_status == 'active' %}chip-matched{% else %}chip-missing{% endif %}">
+                    {{ user.account_status | capitalize }}
+                </span>
+            </div>
+
+            <!-- Password hash is NEVER displayed -->
+            <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border);">
+                <div>
+                    <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;">{{ analysis_count }}</div>
+                    <div class="text-sm text-muted">Analyses</div>
+                </div>
+                <div>
+                    <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800;">{{ user.role | capitalize }}</div>
+                    <div class="text-sm text-muted">Role</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 1.75rem;">
+            <div class="card-header-simple">
+                <h4>Candidate Metadata</h4>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 0.5rem;">
+                    <span class="text-muted">Account ID</span>
+                    <strong>#{{ user.id }}</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 0.5rem;">
+                    <span class="text-muted">Registered</span>
+                    <span>{{ user.created_at.strftime('%b %d, %Y') }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 0.5rem;">
+                    <span class="text-muted">Last Active</span>
+                    <span>{% if user.last_login %}{{ user.last_login.strftime('%b %d, %Y %I:%M %p') }}{% else %}Never{% endif %}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="text-muted">Total Analyses</span>
+                    <span>{{ analysis_count }}</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--color-border); font-size: 0.78rem; color: var(--color-text-subtle);">
+                🔒 Password hashes and credentials are strictly protected and never displayed in administrative views.
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Analysis History -->
+    <div>
+        <div class="card" style="padding: 1.75rem;">
+            <div class="card-header-simple">
+                <h3>Candidate Analysis History</h3>
+                <p class="text-muted text-sm">{{ analysis_count }} analysis record(s) on file</p>
+            </div>
+
+            {% if analyses %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Target Role</th>
+                            <th>Company</th>
+                            <th>Alignment</th>
+                            <th>Skills</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for analysis in analyses %}
+                        <tr>
+                            <td><strong>{{ analysis.job_title or "Unknown Role" }}</strong></td>
+                            <td class="text-muted">{{ analysis.company or "—" }}</td>
+                            <td>
+                                <span class="score-pill {% if analysis.alignment_score >= 70 %}score-pill-green{% elif analysis.alignment_score >= 50 %}score-pill-yellow{% else %}score-pill-red{% endif %}">
+                                    {{ analysis.alignment_score }}%
+                                </span>
+                            </td>
+                            <td>{{ analysis.skills_matched }} matched</td>
+                            <td class="text-muted text-sm">{{ analysis.created_at.strftime('%b %d, %Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state-box" style="padding: 2rem;">
+                <div class="empty-state-icon">📋</div>
+                <p class="text-muted">This candidate has not run any resume analyses yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Founder Dashboard - HireLens Admin{% endblock %}
+{% block page_title %}Founder Overview{% endblock %}
+
+{% block content %}
+
+<!-- Key Metrics Grid -->
+<div class="admin-stats-grid">
+    <div class="card admin-stat-card">
+        <div class="admin-stat-icon" style="background: var(--color-primary-light); color: var(--color-primary); border: 1px solid var(--color-primary-border);">👥</div>
+        <div class="admin-stat-info">
+            <div class="admin-stat-value">{{ total_users }}</div>
+            <div class="admin-stat-label">Total Users</div>
+        </div>
+    </div>
+
+    <div class="card admin-stat-card">
+        <div class="admin-stat-icon" style="background: var(--color-success-bg); color: var(--color-success); border: 1px solid var(--color-success-border);">📈</div>
+        <div class="admin-stat-info">
+            <div class="admin-stat-value">+{{ new_users_7d }}</div>
+            <div class="admin-stat-label">New Users (7 Days)</div>
+        </div>
+    </div>
+
+    <div class="card admin-stat-card">
+        <div class="admin-stat-icon" style="background: var(--color-surface-subtle); color: var(--color-text-main); border: 1px solid var(--color-border);">📅</div>
+        <div class="admin-stat-info">
+            <div class="admin-stat-value">+{{ new_users_30d }}</div>
+            <div class="admin-stat-label">New Users (30 Days)</div>
+        </div>
+    </div>
+
+    <div class="card admin-stat-card">
+        <div class="admin-stat-icon" style="background: var(--color-primary-light); color: var(--color-primary); border: 1px solid var(--color-primary-border);">📊</div>
+        <div class="admin-stat-info">
+            <div class="admin-stat-value">{{ total_analyses }}</div>
+            <div class="admin-stat-label">Total Analyses</div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Metrics -->
+<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
+    <div class="card" style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.75rem;">
+        <div>
+            <div class="text-sm text-muted">Analyses Conducted Today</div>
+            <div style="font-family: var(--font-heading); font-size: 1.65rem; font-weight: 800; color: var(--color-text-main);">{{ analyses_today }}</div>
+        </div>
+        <span class="chip chip-matched">Today</span>
+    </div>
+
+    <div class="card" style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.75rem;">
+        <div>
+            <div class="text-sm text-muted">Platform Avg Alignment Score</div>
+            <div style="font-family: var(--font-heading); font-size: 1.65rem; font-weight: 800; color: var(--color-primary);">{{ avg_score }}%</div>
+        </div>
+        <span class="chip" style="background: var(--color-surface-subtle); border: 1px solid var(--color-border);">Database Average</span>
+    </div>
+</div>
+
+<!-- Recent Data Grid -->
+<div class="admin-two-col">
+
+    <!-- Recent Registrations -->
+    <div class="card admin-panel-card">
+        <div class="card-header-flex">
+            <div>
+                <h3>Recent Registrations</h3>
+                <p class="text-muted text-sm">Latest candidate signups</p>
+            </div>
+            <a href="{{ url_for('admin.admin_users') }}" class="btn btn-outline btn-sm">View All Users</a>
+        </div>
+        {% if recent_users %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <th>Email</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in recent_users %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('admin.admin_user_detail', user_id=user.id) }}" class="admin-link">
+                                <strong>{{ user.full_name }}</strong>
+                            </a>
+                        </td>
+                        <td class="text-muted text-sm">{{ user.email }}</td>
+                        <td class="text-muted text-sm">{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state-box" style="padding: 2rem;">
+            <p class="text-muted">No users registered yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Analyses -->
+    <div class="card admin-panel-card">
+        <div class="card-header-flex">
+            <div>
+                <h3>Recent Analysis Activity</h3>
+                <p class="text-muted text-sm">Latest resume comparisons</p>
+            </div>
+            <a href="{{ url_for('admin.admin_analyses') }}" class="btn btn-outline btn-sm">View All Analyses</a>
+        </div>
+        {% if recent_analyses %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Target Role</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for analysis in recent_analyses %}
+                    <tr>
+                        <td class="text-muted text-sm">{{ analysis.user.full_name if analysis.user else '—' }}</td>
+                        <td><strong>{{ analysis.job_title or "Unknown Role" }}</strong></td>
+                        <td>
+                            <span class="score-pill {% if analysis.alignment_score >= 70 %}score-pill-green{% elif analysis.alignment_score >= 50 %}score-pill-yellow{% else %}score-pill-red{% endif %}">
+                                {{ analysis.alignment_score }}%
+                            </span>
+                        </td>
+                        <td class="text-muted text-sm">{{ analysis.created_at.strftime('%b %d') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state-box" style="padding: 2rem;">
+            <p class="text-muted">No analyses performed yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Quick Admin Nav Cards -->
+<div class="grid-3" style="margin-top: 1.75rem; gap: 1rem;">
+    <a href="{{ url_for('admin.admin_users') }}" class="card quick-action-card" id="admin-dash-users-link">
+        <div class="qa-icon">👥</div>
+        <div class="qa-content"><h4>Manage Users</h4><p>Search and audit all registered candidate accounts</p></div>
+        <div class="qa-arrow">→</div>
+    </a>
+    <a href="{{ url_for('admin.admin_analyses') }}" class="card quick-action-card" id="admin-dash-analyses-link">
+        <div class="qa-icon">📋</div>
+        <div class="qa-content"><h4>Browse Analyses</h4><p>Inspect platform resume comparison metrics</p></div>
+        <div class="qa-arrow">→</div>
+    </a>
+    <a href="{{ url_for('admin.admin_logout') }}" class="card quick-action-card" id="admin-dash-logout-link" style="border-color: var(--color-danger-border);">
+        <div class="qa-icon" style="color: var(--color-danger);">🚪</div>
+        <div class="qa-content"><h4>Sign Out</h4><p>End administrator session securely</p></div>
+        <div class="qa-arrow">→</div>
+    </a>
+</div>
+{% endblock %}

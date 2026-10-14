@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Pricing - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="section-header text-center">
+            <span class="section-subtitle">TRANSPARENT PRICING</span>
+            <h1 class="section-title">Accessible Plans for Every Job Seeker</h1>
+            <p class="section-desc">Designed for college students, freshers, and professionals. Start with our free tier or explore proposed premium options.</p>
+            <div class="pricing-notice">
+                <span class="info-badge">ℹ️ Payment processing is not yet implemented. All plans are currently available as a demonstration of the proposed pricing model.</span>
+            </div>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="grid-3 pricing-grid" style="max-width: 1040px; margin: 0 auto 3.5rem;">
+
+            <!-- FREE / STARTER PLAN -->
+            <div class="pricing-card">
+                <div class="pricing-badge">FREE TIER</div>
+                <h3 class="plan-title">Starter</h3>
+                <div class="plan-price">₹0 <span>/ forever</span></div>
+                <p class="plan-desc">Essential resume comparison for students preparing their first internship or entry-level applications.</p>
+                <ul class="plan-features">
+                    <li>✓ Basic resume analysis</li>
+                    <li>✓ Job-description comparison</li>
+                    <li>✓ Limited access to analysis features</li>
+                    <li>✓ Deterministic skill gap detection</li>
+                    <li>✓ Keyword overlap score</li>
+                    <li>✓ Ethical improvement advice</li>
+                    <li class="plan-feature-no">✗ Unlimited resume history</li>
+                    <li class="plan-feature-no">✗ Deep semantic TF-IDF scoring</li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('analyzer') }}" class="btn btn-secondary btn-block">Analyze Resume</a>
+                {% else %}
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary btn-block" id="pricing-free-btn">Get Started Free</a>
+                {% endif %}
+            </div>
+
+            <!-- PRO / PREMIUM PLAN (FEATURED) -->
+            <div class="pricing-card featured-plan">
+                <div class="pricing-badge badge-popular">PROPOSED PREMIUM</div>
+                <h3 class="plan-title">Pro</h3>
+                <div class="plan-price">₹149 <span>/ month (proposed)</span></div>
+                <p class="plan-desc">For active job seekers who want more analyses, advanced keyword insights, and comprehensive history tracking.</p>
+                <ul class="plan-features">
+                    <li>✓ <strong>More resume analyses</strong></li>
+                    <li>✓ Advanced keyword and skill-gap insights</li>
+                    <li>✓ Detailed improvement recommendations</li>
+                    <li>✓ Additional history and tracking features</li>
+                    <li>✓ <strong>Semantic matching (TF-IDF fit)</strong></li>
+                    <li>✓ Tailored summary suggestions</li>
+                    <li>✓ Action-oriented bullet point optimizer</li>
+                    <li>✓ DOCX &amp; PDF application downloads</li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-block">Start Analysis</a>
+                {% else %}
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-block" id="pricing-pro-btn">Create Free Account</a>
+                {% endif %}
+            </div>
+
+            <!-- STUDENT PLAN -->
+            <div class="pricing-card">
+                <div class="pricing-badge">CAMPUS PASS</div>
+                <h3 class="plan-title">Student</h3>
+                <div class="plan-price">₹79 <span>/ semester (proposed)</span></div>
+                <p class="plan-desc">A budget-friendly option tailored specifically for college students during placement seasons.</p>
+                <ul class="plan-features">
+                    <li>✓ 15 resume analyses per month</li>
+                    <li>✓ Full ATS-style alignment scoring</li>
+                    <li>✓ Complete skill gap identification</li>
+                    <li>✓ Keyword overlap analysis</li>
+                    <li>✓ Resume history (last 30 days)</li>
+                    <li>✓ Action-oriented bullet rewrites</li>
+                    <li>✓ DOCX resume download</li>
+                    <li class="plan-feature-no">✗ Unlimited analyses</li>
+                </ul>
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary btn-block" id="pricing-student-btn">Get Student Plan</a>
+            </div>
+
+        </div>
+
+        <!-- Trust Note -->
+        <div class="trust-box text-center" style="max-width: 780px; margin: 0 auto;">
+            <h4>No Hidden Charges &bull; No Auto-Billing</h4>
+            <p style="margin: 0.5rem auto 0; font-size: 0.9rem;">
+                Payment processing is intentionally not activated until live merchant verification is complete. You will never be charged without explicit consent and transparent checkout.
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

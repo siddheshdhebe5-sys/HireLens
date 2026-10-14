@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}How It Works - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-narrow">
+
+        <!-- Page Header -->
+        <div class="section-header text-center">
+            <span class="section-subtitle">THE PROCESS</span>
+            <h1 class="section-title">How HireLens Works</h1>
+            <p class="section-desc">A transparent, deterministic workflow designed to help you align your real experience with real job opportunities.</p>
+        </div>
+
+        <!-- 3 Core Steps -->
+        <div class="workflow-steps" style="grid-template-columns: 1fr; margin-bottom: 3.5rem;">
+
+            <!-- Step 1 -->
+            <div class="step-card">
+                <div class="step-num">Step 01</div>
+                <h4>Upload your resume</h4>
+                <p>Upload your current master resume in <strong>PDF or DOCX</strong> format, or paste your text directly into the input field. HireLens extracts your contact information, education, experience, and projects using high-performance document parsing.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>📄 In-memory parsing · No permanent document storage</span>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+                <div class="step-num">Step 02</div>
+                <h4>Add the job description</h4>
+                <p>Paste the full job posting for the internship or position you are targeting. HireLens analyzes the requirements, qualifications, and responsibilities to detect core skills and domain terminology.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>🎯 NLP terminology extraction · Target role metadata</span>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <div class="step-num">Step 03</div>
+                <h4>Improve with insights</h4>
+                <p>Receive an explainable alignment score, see matched skills, uncover missing competencies, and review prioritized recommendations to strengthen your application.</p>
+                <div class="ethical-tag" style="margin-top: 1rem;">
+                    <span>📊 4-factor scoring · Zero fabrication policy</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Scoring Methodology -->
+        <div class="card" style="margin-bottom: 3rem; padding: 2.5rem;">
+            <div class="card-header-simple">
+                <h3>Our Explainable Scoring Methodology</h3>
+                <p class="text-muted">No black boxes. Here is exactly how your alignment score is computed:</p>
+            </div>
+
+            <div class="breakdown-list">
+                <div class="breakdown-item">
+                    <div class="breakdown-labels">
+                        <span class="factor-name"><strong>1. Required Skill Match (40%)</strong></span>
+                        <span class="factor-value">40% weight</span>
+                    </div>
+                    <p class="text-sm text-muted">Checks for the presence of exact technical and professional skills required by the job posting.</p>
+                </div>
+
+                <div class="breakdown-item">
+                    <div class="breakdown-labels">
+                        <span class="factor-name"><strong>2. Keyword Alignment (25%)</strong></span>
+                        <span class="factor-value">25% weight</span>
+                    </div>
+                    <p class="text-sm text-muted">Evaluates domain-specific vocabulary and phrase frequency across both documents.</p>
+                </div>
+
+                <div class="breakdown-item">
+                    <div class="breakdown-labels">
+                        <span class="factor-name"><strong>3. Semantic TF-IDF Fit (20%)</strong></span>
+                        <span class="factor-value">20% weight</span>
+                    </div>
+                    <p class="text-sm text-muted">Measures contextual similarity using mathematical cosine distance between document vectors.</p>
+                </div>
+
+                <div class="breakdown-item">
+                    <div class="breakdown-labels">
+                        <span class="factor-name"><strong>4. Experience &amp; Action Evidence (15%)</strong></span>
+                        <span class="factor-value">15% weight</span>
+                    </div>
+                    <p class="text-sm text-muted">Assesses the strength of action verbs, project scope, and quantified outcome statements.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action CTA -->
+        <div class="text-center" style="margin-top: 2rem;">
+            <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-lg">
+                <span>Start Your Resume Analysis</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

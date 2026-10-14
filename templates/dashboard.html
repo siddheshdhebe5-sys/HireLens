@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - HireLens{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <div class="container">
+
+        <!-- Welcome Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-greeting">
+                <h1 class="dashboard-title">
+                    Welcome back, {{ current_user.full_name.split()[0] }} 👋
+                </h1>
+                <p class="dashboard-subtitle">Here is an overview of your resume analysis activity and alignment insights.</p>
+            </div>
+            <div class="dashboard-header-actions">
+                <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-lg" id="dash-analyze-btn">
+                    <span>Analyze Resume</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="stats-grid">
+            <div class="card stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ total_analyses }}</div>
+                    <div class="stat-label">Total Analyses</div>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon" style="background: var(--color-success-bg); color: var(--color-success); border-color: var(--color-success-border);">🎯</div>
+                <div class="stat-content">
+                    <div class="stat-value">
+                        {% if latest_score is not none %}
+                            {{ latest_score }}<span style="font-size: 1rem; color: var(--color-text-muted);">%</span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Latest Score</div>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ recent_analyses | length }}</div>
+                    <div class="stat-label">Recent Analyses</div>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon">✨</div>
+                <div class="stat-content">
+                    <div class="stat-value" style="font-size: 1.35rem;">Free Tier</div>
+                    <div class="stat-label">Current Plan</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid-3 quick-actions-grid">
+            <a href="{{ url_for('analyzer') }}" class="card quick-action-card" id="dash-quick-analyze">
+                <div class="qa-icon">📄</div>
+                <div class="qa-content">
+                    <h4>Analyze Resume</h4>
+                    <p>Upload your resume and compare it against a target job description.</p>
+                </div>
+                <div class="qa-arrow">→</div>
+            </a>
+            <a href="{{ url_for('user.history') }}" class="card quick-action-card" id="dash-quick-history">
+                <div class="qa-icon">📋</div>
+                <div class="qa-content">
+                    <h4>View History</h4>
+                    <p>Browse your previous resume analyses, scores, and recommendations.</p>
+                </div>
+                <div class="qa-arrow">→</div>
+            </a>
+            <a href="{{ url_for('user.profile') }}" class="card quick-action-card" id="dash-quick-profile">
+                <div class="qa-icon">👤</div>
+                <div class="qa-content">
+                    <h4>My Profile</h4>
+                    <p>Update your account details and password security.</p>
+                </div>
+                <div class="qa-arrow">→</div>
+            </a>
+        </div>
+
+        <!-- Recent Analyses Table / Empty State -->
+        <div class="card dashboard-table-card">
+            <div class="card-header-flex">
+                <div>
+                    <h3>Recent Analyses</h3>
+                    <p class="text-muted">Your last {{ recent_analyses | length }} resume analysis{% if recent_analyses | length != 1 %}es{% endif %}</p>
+                </div>
+                {% if recent_analyses %}
+                <a href="{{ url_for('user.history') }}" class="btn btn-outline btn-sm">View All History</a>
+                {% endif %}
+            </div>
+
+            {% if recent_analyses %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Score</th>
+                            <th>Skills Matched</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for analysis in recent_analyses %}
+                        <tr>
+                            <td><strong>{{ analysis.job_title or "Unknown Role" }}</strong></td>
+                            <td>{{ analysis.company or "—" }}</td>
+                            <td>
+                                <span class="score-pill {% if analysis.alignment_score >= 70 %}score-pill-green{% elif analysis.alignment_score >= 50 %}score-pill-yellow{% else %}score-pill-red{% endif %}">
+                                    {{ analysis.alignment_score }}%
+                                </span>
+                            </td>
+                            <td>{{ analysis.skills_matched }} skills</td>
+                            <td class="text-muted">{{ analysis.created_at.strftime('%b %d, %Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- First-time User Empty State per Requirements -->
+            <div class="empty-state-box">
+                <div class="empty-state-icon">📄</div>
+                <h4>Your next opportunity starts here.</h4>
+                <p>Upload your resume and compare it with a job description to see where you stand.</p>
+                <a href="{{ url_for('analyzer') }}" class="btn btn-primary" id="dash-first-analyze-btn">Start Your First Analysis</a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

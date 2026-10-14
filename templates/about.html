@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}About &amp; Mission - HireLens{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container container-narrow">
+        
+        <!-- Header -->
+        <div class="section-header text-center">
+            <span class="section-subtitle">OUR MISSION</span>
+            <h1 class="section-title">The HireLens Venture Story</h1>
+            <p class="section-desc">Empowering students and job seekers with affordable, ethical, and explainable career tools.</p>
+        </div>
+
+        <!-- Mission & Executive Summary Grid -->
+        <div class="grid-2" style="margin-bottom: 2rem;">
+            <div class="card">
+                <div class="feature-icon">🚀</div>
+                <h3>Executive Summary</h3>
+                <p>HireLens is a career-tech platform designed to eliminate the resume black hole experienced by millions of college students and fresh graduates. By comparing candidate resumes directly against targeted job postings using natural language heuristics and ethical AI, HireLens turns generic resumes into role-aligned applications in seconds.</p>
+            </div>
+
+            <div class="card">
+                <div class="feature-icon">🎯</div>
+                <h3>Unique Selling Proposition</h3>
+                <p>Unlike black-box resume builders or generic chatbots that hallucinate credentials, HireLens delivers an explainable alignment score, deterministic skill gap analysis, and honest tailoring with a strict <strong>Zero-Fabrication Policy</strong>.</p>
+            </div>
+        </div>
+
+        <!-- Target Market & Customer Segments -->
+        <div class="card" id="target-market" style="margin-bottom: 2rem; padding: 2rem;">
+            <div class="card-header-simple">
+                <h3>Target Customer Segments</h3>
+                <p class="text-muted">Multi-phase market expansion strategy</p>
+            </div>
+
+            <div class="grid-3">
+                <div>
+                    <h4>College Students &amp; Interns</h4>
+                    <p class="text-sm">Undergraduates applying for competitive summer internships who need to tailor coursework and projects to technical job descriptions.</p>
+                </div>
+
+                <div>
+                    <h4>Fresh Graduates</h4>
+                    <p class="text-sm">Recent degree holders transitioning into full-time junior roles, requiring role-aligned terminology and quantifiable achievements.</p>
+                </div>
+
+                <div>
+                    <h4>Career Advisors &amp; Placement Cells</h4>
+                    <p class="text-sm">Academic institutions and career development offices looking to boost overall placement readiness through transparent resume diagnostics.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ethical AI Principles -->
+        <div class="card" style="margin-bottom: 2rem; padding: 2rem;">
+            <div class="card-header-simple">
+                <h3>🛡️ Our Ethical AI Commitment</h3>
+                <p class="text-muted">Setting the standard for truthful, transparent career technology</p>
+            </div>
+
+            <div class="grid-3">
+                <div>
+                    <h4>1. Zero Fabrication</h4>
+                    <p class="text-sm">HireLens strictly forbids the invention of fake work experience, unearned degrees, fake companies, or fraudulent metrics.</p>
+                </div>
+
+                <div>
+                    <h4>2. Transparent Skill Gaps</h4>
+                    <p class="text-sm">When required skills are absent from a candidate's resume, our system explicitly advises adding them ONLY if genuinely possessed.</p>
+                </div>
+
+                <div>
+                    <h4>3. Explainable Scoring</h4>
+                    <p class="text-sm">Our alignment score is openly broken down into 4 clear weighted factors, avoiding deceptive promises of guaranteed interviews or employment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Section -->
+        <div class="card" id="privacy" style="margin-bottom: 2rem; padding: 2rem;">
+            <div class="card-header-simple">
+                <h3>Privacy Policy</h3>
+                <p class="text-muted">How HireLens handles your uploaded resumes and data</p>
+            </div>
+            <p class="text-sm" style="margin-bottom: 0.75rem;">
+                <strong>In-Memory Processing:</strong> When you upload a resume, file contents are processed strictly in temporary server memory for the duration of the analysis request to calculate your alignment score and identify skills. We do not permanently store or archive your raw PDF or DOCX files on our servers.
+            </p>
+            <p class="text-sm" style="margin-bottom: 0.75rem;">
+                <strong>Account Information:</strong> For registered users, we store your name, email, securely hashed password (via PBKDF2), and high-level analysis metadata (job title, alignment score, and skill counts) so that you can view your personal history.
+            </p>
+            <p class="text-sm">
+                <strong>No Third-Party Sharing:</strong> We do not sell, rent, or distribute candidate resumes or personal details to third-party recruiters or data brokers.
+            </p>
+        </div>
+
+        <!-- Terms of Service Section -->
+        <div class="card" id="terms" style="margin-bottom: 2rem; padding: 2rem;">
+            <div class="card-header-simple">
+                <h3>Terms of Service</h3>
+                <p class="text-muted">Fair and honest use guidelines</p>
+            </div>
+            <p class="text-sm" style="margin-bottom: 0.75rem;">
+                By using HireLens, you agree to submit only your own resumes or authorized materials. You agree not to use HireLens to generate fraudulent or deceitful job applications.
+            </p>
+            <p class="text-sm">
+                HireLens provides educational diagnostic estimates and does not guarantee job placement, ATS passing scores, or employment offers.
+            </p>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="card text-center" id="contact" style="padding: 2.5rem; margin-bottom: 2rem;">
+            <h3>Contact HireLens</h3>
+            <p style="margin: 0.75rem auto 1.5rem; max-width: 500px;">
+                Have feedback, questions, or ideas for improving HireLens? We would love to hear from you.
+            </p>
+            <a href="mailto:support@hirelens.local" class="btn btn-outline">Email the Founder Team</a>
+        </div>
+
+        <!-- Action CTA -->
+        <div class="text-center" style="margin-top: 1rem;">
+            <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-lg">Start Resume Analysis</a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
