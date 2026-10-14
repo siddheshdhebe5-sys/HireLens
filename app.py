@@ -48,11 +48,26 @@ app.secret_key = os.getenv("SECRET_KEY", "resumeai-dev-secret-key-2026-change-me
 app.config["MAX_CONTENT_LENGTH"] = int(os.getenv("MAX_CONTENT_LENGTH_MB", 5)) * 1024 * 1024
 
 # Database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///resumeai.db")
+database_url = os.getenv("DATABASE_URL", "sqlite:///resumeai.db")
+# Render / cloud compatibility: SQLAlchemy 1.4+ requires postgresql:// instead of postgres://
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Ensure instance directory exists for SQLite
+try:
+    os.makedirs(app.instance_path, exist_ok=True)
+except OSError:
+    pass
 
 # Initialize extensions
 db.init_app(app)
+
+# Ensure database tables are created safely during application startup
+with app.app_context():
+    db.create_all()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -475,4 +490,6 @@ def init_db():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    port = int(os.getenv("PORT", 5000))
+    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)
