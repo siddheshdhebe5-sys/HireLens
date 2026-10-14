@@ -16,14 +16,7 @@
 </head>
 <body>
     <!-- Top Announcement / Mode Banner -->
-    {% if not is_ai_live %}
-    <div class="top-banner demo-banner">
-        <div class="container banner-content">
-            <span class="banner-badge">Demo Mode Active</span>
-            <span>Operating with deterministic NLP &amp; heuristic skill analysis. Add <code>GEMINI_API_KEY</code> in <code>.env</code> for live Gemini AI models.</span>
-        </div>
-    </div>
-    {% else %}
+    {% if is_ai_live %}
     <div class="top-banner ai-live-banner">
         <div class="container banner-content">
             <span class="banner-badge badge-live">Gemini AI Connected</span>
