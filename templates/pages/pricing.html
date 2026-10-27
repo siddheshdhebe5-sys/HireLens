@@ -6,90 +6,198 @@
     <div class="container">
 
         <!-- Page Header -->
-        <div class="section-header text-center">
-            <span class="section-subtitle">TRANSPARENT PRICING</span>
-            <h1 class="section-title">Accessible Plans for Every Job Seeker</h1>
-            <p class="section-desc">Designed for college students, freshers, and professionals. Start with our free tier or explore proposed premium options.</p>
-            <div class="pricing-notice">
-                <span class="info-badge">ℹ️ Payment processing is not yet implemented. All plans are currently available as a demonstration of the proposed pricing model.</span>
+        <div class="section-header text-center" style="margin-bottom: 3.5rem;">
+            <div class="pill-tag" style="display: inline-flex; margin-bottom: 1.25rem;">
+                <span class="pill-dot"></span>
+                <span>TRANSPARENT PRICING</span>
+            </div>
+            <h1 class="section-title">Simple Pricing for Every Job Seeker</h1>
+            <p class="section-desc" style="max-width: 600px; margin: 1rem auto 0;">
+                Designed for college students, freshers, and professionals. Start free and upgrade when you're ready to unlock the full experience.
+            </p>
+            <div class="pricing-notice" style="margin-top: 1.5rem;">
+                <span class="info-badge">ℹ️ Payment processing is not yet implemented. The Premium plan is available as a proposed offering for our demonstration.</span>
             </div>
         </div>
 
-        <!-- Pricing Cards -->
-        <div class="grid-3 pricing-grid" style="max-width: 1040px; margin: 0 auto 3.5rem;">
+        <!-- Pricing Cards — 2 Plans -->
+        <div class="pricing-grid" style="max-width: 860px; margin: 0 auto 4rem;">
 
-            <!-- FREE / STARTER PLAN -->
-            <div class="pricing-card">
-                <div class="pricing-badge">FREE TIER</div>
-                <h3 class="plan-title">Starter</h3>
+            <!-- Plan 1: Free -->
+            <div class="pricing-card" id="pricing-card-free">
+                <div class="pricing-badge">FREE STARTER</div>
+                <h3 class="plan-title">Free Starter</h3>
                 <div class="plan-price">₹0 <span>/ forever</span></div>
-                <p class="plan-desc">Essential resume comparison for students preparing their first internship or entry-level applications.</p>
+                <p class="plan-desc">Essential Starter plan for every Student and job seeker — no credit card, no time limit.</p>
                 <ul class="plan-features">
-                    <li>✓ Basic resume analysis</li>
-                    <li>✓ Job-description comparison</li>
-                    <li>✓ Limited access to analysis features</li>
-                    <li>✓ Deterministic skill gap detection</li>
-                    <li>✓ Keyword overlap score</li>
-                    <li>✓ Ethical improvement advice</li>
-                    <li class="plan-feature-no">✗ Unlimited resume history</li>
-                    <li class="plan-feature-no">✗ Deep semantic TF-IDF scoring</li>
+                    <li>
+                        <span style="color: var(--color-success);">✓</span>
+                        Basic resume &amp; job description analysis
+                    </li>
+                    <li>
+                        <span style="color: var(--color-success);">✓</span>
+                        ATS-style alignment score (0–100)
+                    </li>
+                    <li>
+                        <span style="color: var(--color-success);">✓</span>
+                        Matched &amp; missing skill detection
+                    </li>
+                    <li>
+                        <span style="color: var(--color-success);">✓</span>
+                        Keyword overlap analysis
+                    </li>
+                    <li>
+                        <span style="color: var(--color-success);">✓</span>
+                        Ethical improvement recommendations
+                    </li>
+                    <li>
+                        <span style="color: var(--color-success);">✓</span>
+                        4-factor scoring breakdown
+                    </li>
+                    <li class="plan-feature-no">
+                        <span>✗</span>
+                        Tailored resume generation
+                    </li>
+                    <li class="plan-feature-no">
+                        <span>✗</span>
+                        DOCX &amp; cover letter exports
+                    </li>
+                    <li class="plan-feature-no">
+                        <span>✗</span>
+                        Analysis history
+                    </li>
                 </ul>
                 {% if current_user.is_authenticated %}
-                <a href="{{ url_for('analyzer') }}" class="btn btn-secondary btn-block">Analyze Resume</a>
+                <a href="{{ url_for('analyzer') }}" class="btn btn-secondary btn-block" id="pricing-free-analyze-btn">Analyze Resume →</a>
                 {% else %}
-                <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary btn-block" id="pricing-free-btn">Get Started Free</a>
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary btn-block" id="pricing-free-signup-btn">Get Started Free →</a>
                 {% endif %}
             </div>
 
-            <!-- PRO / PREMIUM PLAN (FEATURED) -->
-            <div class="pricing-card featured-plan">
-                <div class="pricing-badge badge-popular">PROPOSED PREMIUM</div>
-                <h3 class="plan-title">Pro</h3>
-                <div class="plan-price">₹149 <span>/ month (proposed)</span></div>
-                <p class="plan-desc">For active job seekers who want more analyses, advanced keyword insights, and comprehensive history tracking.</p>
+            <!-- Plan 2: HireLens Premium (Featured) -->
+            <div class="pricing-card featured-plan" id="pricing-card-premium">
+                <div class="pricing-badge badge-popular">✦ HIRELENS PREMIUM PRO</div>
+                <h3 class="plan-title">HireLens Premium</h3>
+                <div class="plan-price">
+                    ₹500 <span>/ year</span>
+                </div>
+                <p style="font-size: 0.82rem; color: var(--color-primary); font-weight: 600; margin: -0.75rem 0 1rem;">
+                    ≈ ₹41.67 per month, billed annually
+                </p>
+                <p class="plan-desc">The complete Pro toolkit for serious job seekers — AI-tailored resumes, exports, and more.</p>
                 <ul class="plan-features">
-                    <li>✓ <strong>More resume analyses</strong></li>
-                    <li>✓ Advanced keyword and skill-gap insights</li>
-                    <li>✓ Detailed improvement recommendations</li>
-                    <li>✓ Additional history and tracking features</li>
-                    <li>✓ <strong>Semantic matching (TF-IDF fit)</strong></li>
-                    <li>✓ Tailored summary suggestions</li>
-                    <li>✓ Action-oriented bullet point optimizer</li>
-                    <li>✓ DOCX &amp; PDF application downloads</li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        <strong>Everything in Free</strong>
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        <strong>Enhanced AI tailored resume generation</strong>
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Complete multi-section resume preview
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Job-specific keyword optimisation
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Professional DOCX resume download
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Tailored cover letter generation
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Detailed skill-gap analysis &amp; recommendations
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Full resume analysis history
+                    </li>
+                    <li>
+                        <span style="color: var(--color-primary);">✓</span>
+                        Priority Gemini AI processing
+                    </li>
                 </ul>
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('analyzer') }}" class="btn btn-primary btn-block">Start Analysis</a>
-                {% else %}
-                <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-block" id="pricing-pro-btn">Create Free Account</a>
-                {% endif %}
+                <a href="{{ url_for('upgrade') }}" class="btn btn-primary btn-block" id="pricing-premium-btn">
+                    Get Premium — ₹500/year
+                </a>
             </div>
 
-            <!-- STUDENT PLAN -->
-            <div class="pricing-card">
-                <div class="pricing-badge">CAMPUS PASS</div>
-                <h3 class="plan-title">Student</h3>
-                <div class="plan-price">₹79 <span>/ semester (proposed)</span></div>
-                <p class="plan-desc">A budget-friendly option tailored specifically for college students during placement seasons.</p>
-                <ul class="plan-features">
-                    <li>✓ 15 resume analyses per month</li>
-                    <li>✓ Full ATS-style alignment scoring</li>
-                    <li>✓ Complete skill gap identification</li>
-                    <li>✓ Keyword overlap analysis</li>
-                    <li>✓ Resume history (last 30 days)</li>
-                    <li>✓ Action-oriented bullet rewrites</li>
-                    <li>✓ DOCX resume download</li>
-                    <li class="plan-feature-no">✗ Unlimited analyses</li>
-                </ul>
-                <a href="{{ url_for('auth.signup') }}" class="btn btn-secondary btn-block" id="pricing-student-btn">Get Student Plan</a>
-            </div>
+        </div>
 
+        <!-- Feature Comparison Table -->
+        <div style="max-width: 860px; margin: 0 auto 4rem;">
+            <h2 class="text-center" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Plan Comparison</h2>
+            <div class="table-responsive card" style="padding: 0; overflow: hidden;">
+                <table class="data-table" style="margin: 0;">
+                    <thead>
+                        <tr>
+                            <th style="width: 55%;">Feature</th>
+                            <th class="text-center">Free</th>
+                            <th class="text-center" style="color: var(--color-primary);">Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Resume upload (PDF / DOCX)</td>
+                            <td class="text-center" style="color: var(--color-success);">✓</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>ATS alignment score</td>
+                            <td class="text-center" style="color: var(--color-success);">✓</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Matched &amp; missing skills</td>
+                            <td class="text-center" style="color: var(--color-success);">✓</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Keyword overlap analysis</td>
+                            <td class="text-center" style="color: var(--color-success);">✓</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>AI tailored resume generation</td>
+                            <td class="text-center" style="color: var(--color-text-subtle);">—</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Professional DOCX download</td>
+                            <td class="text-center" style="color: var(--color-text-subtle);">—</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Cover letter generation &amp; PDF</td>
+                            <td class="text-center" style="color: var(--color-text-subtle);">—</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Analysis history</td>
+                            <td class="text-center" style="color: var(--color-text-subtle);">—</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Gemini AI processing</td>
+                            <td class="text-center" style="color: var(--color-text-subtle);">—</td>
+                            <td class="text-center" style="color: var(--color-primary); font-weight: 700;">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Trust Note -->
-        <div class="trust-box text-center" style="max-width: 780px; margin: 0 auto;">
-            <h4>No Hidden Charges &bull; No Auto-Billing</h4>
-            <p style="margin: 0.5rem auto 0; font-size: 0.9rem;">
-                Payment processing is intentionally not activated until live merchant verification is complete. You will never be charged without explicit consent and transparent checkout.
+        <div class="trust-box text-center" style="max-width: 780px; margin: 0 auto 2rem;">
+            <h4>No Hidden Charges &bull; No Auto-Billing &bull; Zero Fabrication Guarantee</h4>
+            <p style="margin: 0.65rem auto 0; font-size: 0.9rem; max-width: 600px;">
+                Payment processing is intentionally not yet activated. You will never be charged without explicit consent and a transparent checkout. HireLens will never invent qualifications on your behalf.
             </p>
         </div>
 

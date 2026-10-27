@@ -2628,3 +2628,73 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
         padding: 1.75rem;
     }
 }
+
+/* ==========================================================================
+   Additional Utilities — Tailored Resume & Public Pages
+   ========================================================================== */
+
+/* Generic section wrapper */
+.section {
+    padding: 3rem 0;
+}
+
+/* Page-level title & description (used by tailored_resume.html and public pages) */
+.page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-bottom: 0.4rem;
+    line-height: 1.25;
+}
+
+.page-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Role meta box inside results-top-bar */
+.role-meta-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+/* Section header for public pages (pricing, features, how-it-works) */
+.section-header {
+    margin-bottom: 2.5rem;
+}
+
+.section-subtitle {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+}
+
+.section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-text-main);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.section-desc {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Premium badge on featured pricing card */
+.featured-plan .plan-price {
+    color: var(--color-primary);
+}
+

@@ -184,6 +184,16 @@ app.register_blueprint(main_bp)
 
 
 # ---------------------------------------------------------------------------
+# Premium upgrade landing route
+# ---------------------------------------------------------------------------
+
+@app.route("/upgrade")
+def upgrade():
+    """Premium upgrade landing / coming soon page."""
+    return render_template("pages/upgrade.html")
+
+
+# ---------------------------------------------------------------------------
 # Resume Analysis Routes (preserved from original, with DB persistence)
 # ---------------------------------------------------------------------------
 
@@ -474,6 +484,54 @@ def create_admin(email: str, name: str, password: str):
         db.session.commit()
         click.echo(f"[OK] Admin account created: {email} (role=admin)")
         click.echo("[INFO] Login at: /admin/login")
+
+
+@app.cli.command("grant-premium")
+@click.argument("email")
+def grant_premium(email: str):
+    """
+    Grant HireLens Premium access to an existing user (admin-only offline action).
+
+    Usage:
+        flask grant-premium user@example.com
+
+    Premium access MUST only be granted after verified payment or an authorised
+    administrative decision. This CLI command is the single authorised activation path.
+    """
+    from datetime import datetime, timezone
+    with app.app_context():
+        user = User.query.filter_by(email=email.lower().strip()).first()
+        if not user:
+            click.echo(f"[ERROR] No user found with email: {email}")
+            return
+        if user.is_premium:
+            click.echo(f"[INFO] User {email} already has Premium access.")
+            return
+        user.is_premium = True
+        user.premium_activated_at = datetime.now(timezone.utc)
+        db.session.commit()
+        click.echo(f"[OK] Premium access granted to: {email}")
+        click.echo("[INFO] Activation requires a verified payment in production. This CLI grant is for admin/demo use.")
+
+
+@app.cli.command("revoke-premium")
+@click.argument("email")
+def revoke_premium(email: str):
+    """
+    Revoke HireLens Premium access from a user.
+
+    Usage:
+        flask revoke-premium user@example.com
+    """
+    with app.app_context():
+        user = User.query.filter_by(email=email.lower().strip()).first()
+        if not user:
+            click.echo(f"[ERROR] No user found with email: {email}")
+            return
+        user.is_premium = False
+        user.premium_activated_at = None
+        db.session.commit()
+        click.echo(f"[OK] Premium access revoked for: {email}")
 
 
 @app.cli.command("init-db")

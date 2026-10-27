@@ -38,6 +38,9 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(512), nullable=False)
     role = db.Column(db.String(20), nullable=False, default="user")  # 'user' | 'admin'
     account_status = db.Column(db.String(20), nullable=False, default="active")  # 'active' | 'suspended'
+    # Premium subscription flag — only activated by verified payment or admin CLI action
+    is_premium = db.Column(db.Boolean, nullable=False, default=False)
+    premium_activated_at = db.Column(db.DateTime(timezone=True), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=utcnow)
     updated_at = db.Column(db.DateTime(timezone=True), nullable=True, onupdate=utcnow)
     last_login = db.Column(db.DateTime(timezone=True), nullable=True)
@@ -70,6 +73,8 @@ class User(db.Model, UserMixin):
             "full_name": self.full_name,
             "role": self.role,
             "account_status": self.account_status,
+            "is_premium": self.is_premium,
+            "premium_activated_at": self.premium_activated_at,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "last_login": self.last_login,

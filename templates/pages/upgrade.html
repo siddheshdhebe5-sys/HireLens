@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Get HireLens Premium — ₹500/year{% endblock %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div style="max-width: 680px; margin: 0 auto; text-align: center; padding: 3rem 0;">
+
+            <!-- Icon -->
+            <div style="width: 72px; height: 72px; border-radius: var(--radius-lg); background: var(--color-primary-light); border: 1px solid var(--color-primary-border); color: var(--color-primary); font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.75rem;">
+                ✦
+            </div>
+
+            <!-- Badge -->
+            <div class="pill-tag" style="display: inline-flex; margin-bottom: 1.25rem;">
+                <span class="pill-dot"></span>
+                <span>HIRELENS PREMIUM</span>
+            </div>
+
+            <h1 style="font-size: 2.25rem; margin-bottom: 1rem;">Upgrade to HireLens Premium</h1>
+
+            <p style="font-size: 1.05rem; max-width: 520px; margin: 0 auto 2rem;">
+                Unlock AI-powered tailored resume generation, DOCX exports, cover letter creation, and full analysis history — all for just <strong style="color: var(--color-text-main);">₹500 per year</strong>.
+            </p>
+
+            <!-- Honest Notice Card -->
+            <div class="card" style="text-align: left; margin-bottom: 2rem; background: var(--color-warning-bg); border-color: var(--color-warning-border);">
+                <div style="display: flex; align-items: flex-start; gap: 0.85rem;">
+                    <span style="font-size: 1.5rem; flex-shrink: 0; line-height: 1;">⚠️</span>
+                    <div>
+                        <h4 style="color: var(--color-warning); margin-bottom: 0.4rem; font-size: 1rem;">Payment Processing Not Yet Active</h4>
+                        <p style="font-size: 0.9rem; color: var(--color-warning); margin: 0; line-height: 1.6;">
+                            HireLens Premium is currently in its pre-launch phase. A verified payment gateway has not yet been integrated. 
+                            <strong>No payment will be taken</strong>, and no Premium access will be activated by clicking any button on this page. 
+                            When payment processing is launched, this page will be updated with a secure, transparent checkout. 
+                            You will never be charged without your explicit consent.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What you'll get -->
+            <div class="card" style="text-align: left; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.25rem; font-size: 1.15rem;">What's included in Premium (₹500/year)</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9375rem;">
+                        <span style="color: var(--color-primary); font-weight: 700; flex-shrink: 0;">✓</span>
+                        <span><strong>Enhanced AI tailored resume generation</strong> — Complete, multi-section tailored resume using Google Gemini 2.5 Flash</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9375rem;">
+                        <span style="color: var(--color-primary); font-weight: 700; flex-shrink: 0;">✓</span>
+                        <span><strong>Professional DOCX download</strong> — ATS-compatible resume with all sections: summary, skills, education, experience, projects, certifications</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9375rem;">
+                        <span style="color: var(--color-primary); font-weight: 700; flex-shrink: 0;">✓</span>
+                        <span><strong>Tailored cover letter generation</strong> — AI-crafted cover letter with PDF download</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9375rem;">
+                        <span style="color: var(--color-primary); font-weight: 700; flex-shrink: 0;">✓</span>
+                        <span><strong>Detailed skill-gap analysis</strong> — Prioritised recommendations for your target role</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9375rem;">
+                        <span style="color: var(--color-primary); font-weight: 700; flex-shrink: 0;">✓</span>
+                        <span><strong>Analysis history</strong> — Access all your past resume analyses</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9375rem;">
+                        <span style="color: var(--color-primary); font-weight: 700; flex-shrink: 0;">✓</span>
+                        <span><strong>Everything in Free</strong> — All existing analysis features included</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Pricing summary -->
+            <div style="background: var(--color-surface); border: 2px solid var(--color-primary); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; font-weight: 800; font-family: var(--font-heading); color: var(--color-text-main); line-height: 1;">₹500</div>
+                <div style="font-size: 0.95rem; color: var(--color-text-muted); margin: 0.35rem 0 0.15rem;">per year &nbsp;·&nbsp; billed annually</div>
+                <div style="font-size: 0.85rem; color: var(--color-primary); font-weight: 600;">≈ ₹41.67 per month</div>
+            </div>
+
+            <!-- CTA — Notify Me -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; align-items: center;">
+                {% if current_user.is_authenticated %}
+                <p style="font-size: 0.9rem; background: var(--color-surface-subtle); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 0.75rem 1.25rem; width: 100%; text-align: center; color: var(--color-text-muted);">
+                    You're signed in as <strong style="color: var(--color-text-main);">{{ current_user.full_name }}</strong>.
+                    Premium activation will be available once payment processing is launched.
+                </p>
+                {% else %}
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg" id="upgrade-signup-btn" style="width: 100%; max-width: 380px;">
+                    Create a Free Account to Get Notified
+                </a>
+                <p style="font-size: 0.82rem; color: var(--color-text-subtle);">No card required. Free forever until you choose to upgrade.</p>
+                {% endif %}
+                <a href="{{ url_for('main.pricing') }}" class="btn btn-outline" id="upgrade-back-pricing">← Back to Pricing</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

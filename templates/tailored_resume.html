@@ -11,21 +11,24 @@
             <div class="role-meta-box">
                 <div class="pill-tag" style="margin-bottom: 0.5rem;">
                     <span class="pill-dot"></span>
-                    <span>APPLICATION OPTIMIZATION</span>
+                    <span>TAILORED RESUME</span>
                 </div>
                 <h1 class="page-title" style="font-size: 1.85rem;">AI-Tailored Resume Optimization</h1>
                 <p class="page-desc">Targeting: <strong>{{ analysis.job_meta.title }}</strong> at <strong>{{ analysis.job_meta.company or "Target Role" }}</strong></p>
             </div>
             <div class="candidate-meta-box">
                 {% if tailored.is_demo_mode %}
-                    <span class="chip chip-missing" style="margin-bottom: 0.5rem; display: inline-block;">⚡ Fallback Mode (Deterministic Rules)</span>
+                    <span class="chip chip-missing" style="margin-bottom: 0.75rem; display: inline-block;">⚡ Demo Mode (Deterministic)</span>
                 {% else %}
-                    <span class="chip chip-matched" style="margin-bottom: 0.5rem; display: inline-block;">✨ Live Gemini AI Generated</span>
+                    <span class="chip chip-matched" style="margin-bottom: 0.75rem; display: inline-block;">✨ Gemini AI Generated</span>
                 {% endif %}
-                <div>
-                    <a href="{{ url_for('download_resume') }}" class="btn btn-primary" id="btn-download-resume-top">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        <span>Download DOCX Resume</span>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end;">
+                    <a href="{{ url_for('download_resume') }}" class="btn btn-primary btn-sm" id="btn-download-docx">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download DOCX
+                    </a>
+                    <a href="{{ url_for('cover_letter') }}" class="btn btn-outline btn-sm" id="btn-gen-cover">
+                        Cover Letter
                     </a>
                 </div>
             </div>
@@ -37,89 +40,272 @@
         </div>
         {% endif %}
 
-        <!-- Tailoring Content Grid -->
-        <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
-            
-            <!-- Section 1: Optimized Professional Summary -->
-            <div class="card">
-                <div class="card-header-flex">
-                    <div class="card-title-icon">
-                        <span class="icon-bubble">✨</span>
-                        <div>
-                            <h3>Targeted Professional Summary</h3>
-                            <p class="text-muted">Framed to highlight your genuine qualifications for this role</p>
-                        </div>
+        <!-- FULL RESUME PREVIEW (Paper Document) -->
+        <div class="doc-paper" id="resume-preview-paper">
+
+            <!-- Name & Contact Header -->
+            <div class="doc-header">
+                <h2 class="doc-applicant-name">{{ resume.contact.name or "Candidate" }}</h2>
+                <div class="doc-contact-line">
+                    {% set contact_parts = [] %}
+                    {% if resume.contact.email %}{% set _ = contact_parts.append(resume.contact.email) %}{% endif %}
+                    {% if resume.contact.phone %}{% set _ = contact_parts.append(resume.contact.phone) %}{% endif %}
+                    {% if resume.contact.linkedin %}{% set _ = contact_parts.append(resume.contact.linkedin) %}{% endif %}
+                    {% if resume.contact.github %}{% set _ = contact_parts.append(resume.contact.github) %}{% endif %}
+                    {{ contact_parts | join('  ·  ') }}
+                </div>
+            </div>
+
+            <!-- Professional Summary -->
+            {% set summary = tailored.professional_summary or tailored.tailored_summary %}
+            {% if summary %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">Targeted Professional Summary</h3>
+                <p style="font-size: 0.95rem; line-height: 1.7; color: var(--color-text-main); margin: 0;">{{ summary }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Technical Skills -->
+            {% set tech_skills = tailored.skills.technical if tailored.skills is defined and tailored.skills else [] %}
+            {% set soft_skills = tailored.skills.soft if tailored.skills is defined and tailored.skills else [] %}
+            {% if not tech_skills and tailored.skill_emphasis %}
+                {% set tech_skills = tailored.skill_emphasis[0].skills if tailored.skill_emphasis|length > 0 else [] %}
+            {% endif %}
+            {% if tech_skills or soft_skills %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">TECHNICAL SKILLS</h3>
+                {% if tech_skills %}
+                <p style="font-size: 0.9rem; line-height: 1.6; color: var(--color-text-main); margin-bottom: 0.35rem;">
+                    <strong>Technical:</strong> {{ tech_skills | join(', ') }}
+                </p>
+                {% endif %}
+                {% if soft_skills %}
+                <p style="font-size: 0.9rem; line-height: 1.6; color: var(--color-text-main); margin: 0;">
+                    <strong>Professional:</strong> {{ soft_skills | join(', ') }}
+                </p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Education -->
+            {% if tailored.education and tailored.education | length > 0 %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">EDUCATION</h3>
+                {% for edu in tailored.education %}
+                <div style="margin-bottom: 0.85rem;">
+                    {% if edu.degree %}
+                    <div style="font-weight: 700; font-size: 0.975rem; color: var(--color-text-main);">{{ edu.degree }}</div>
+                    {% endif %}
+                    {% if edu.institution or edu.year %}
+                    <div style="font-size: 0.9rem; color: var(--color-text-muted); font-style: italic;">
+                        {{ edu.institution }}{% if edu.institution and edu.year %} &nbsp;|&nbsp; {% endif %}{{ edu.year }}
                     </div>
-                    <button type="button" class="btn btn-outline btn-sm" onclick="copyToClipboard('tailored-summary-text', this)">
-                        <span>Copy Summary</span>
-                    </button>
+                    {% endif %}
+                    {% if edu.gpa %}
+                    <div style="font-size: 0.875rem; color: var(--color-text-main);">GPA: {{ edu.gpa }}</div>
+                    {% endif %}
+                    {% if edu.coursework %}
+                    <div style="font-size: 0.875rem; color: var(--color-text-main);"><strong>Relevant Coursework:</strong> {{ edu.coursework }}</div>
+                    {% endif %}
                 </div>
-
-                <div style="padding: 1.25rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-                    <p id="tailored-summary-text" style="font-size: 1.05rem; line-height: 1.7; color: var(--color-text-main); margin: 0;">{{ tailored.tailored_summary }}</p>
-                </div>
+                {% endfor %}
             </div>
+            {% elif resume.sections.education %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">EDUCATION</h3>
+                <div style="font-size: 0.9rem; line-height: 1.7; white-space: pre-line; color: var(--color-text-main);">{{ resume.sections.education }}</div>
+            </div>
+            {% endif %}
 
-            <!-- Section 2: Strategic Skill Categorization -->
-            <div class="card">
-                <div class="card-header-simple">
-                    <h3>Strategic Skill Categorization</h3>
-                    <p class="text-muted">Recommended grouping to maximize ATS parsing efficiency</p>
-                </div>
-
-                <div class="grid-2">
-                    {% for group in tailored.skill_emphasis %}
-                        <div style="padding: 1rem; background: var(--color-surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-                            <h4 style="margin-bottom: 0.65rem; font-size: 0.95rem;">{{ group.category }}</h4>
-                            <div class="chips-wrapper">
-                                {% for s in group.skills %}
-                                    <span class="skill-chip chip-matched">✓ {{ s }}</span>
-                                {% endfor %}
-                            </div>
+            <!-- Work Experience -->
+            {% set real_exp = [] %}
+            {% if tailored.experience %}
+                {% for e in tailored.experience %}
+                    {% if 'intern' not in (e.title or '') | lower %}
+                        {% set _ = real_exp.append(e) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if real_exp %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">WORK EXPERIENCE</h3>
+                {% for exp in real_exp %}
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem;">
+                        <div>
+                            <span style="font-weight: 700; font-size: 0.975rem; color: var(--color-text-main);">{{ exp.title }}</span>
+                            {% if exp.company %}<span style="color: var(--color-text-muted); font-size: 0.9rem;"> — {{ exp.company }}</span>{% endif %}
                         </div>
-                    {% endfor %}
+                        {% if exp.duration %}<span style="font-size: 0.875rem; color: var(--color-text-muted); font-style: italic; white-space: nowrap;">{{ exp.duration }}</span>{% endif %}
+                    </div>
+                    {% if exp.bullets %}
+                    <ul style="margin: 0.4rem 0 0 1.25rem; padding: 0;">
+                        {% for bullet in exp.bullets %}
+                        <li style="font-size: 0.9rem; line-height: 1.65; color: var(--color-text-main); margin-bottom: 0.2rem;">{{ bullet }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                 </div>
+                {% endfor %}
             </div>
+            {% endif %}
 
-            <!-- Section 3: Bullet Point Improvements -->
-            <div class="card">
-                <div class="card-header-simple">
-                    <h3>Project &amp; Experience Bullet Point Optimizations</h3>
-                    <p class="text-muted">Transforms draft descriptions into measurable, action-oriented statements without inventing facts</p>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                    {% for b in tailored.bullet_improvements %}
-                        <div class="bullet-comparison-card">
-                            <div class="bullet-original">
-                                <strong class="text-sm" style="display: block; margin-bottom: 0.25rem;">ORIGINAL DRAFT:</strong>
-                                {{ b.original_context }}
-                            </div>
-                            <div class="bullet-revised">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                                    <strong class="text-sm" style="color: var(--color-primary);">⭐ TAILORED REVISION:</strong>
-                                    <button type="button" class="btn btn-outline btn-sm" onclick="copyText('{{ b.tailored_bullet | escape }}', this)">Copy</button>
-                                </div>
-                                &bull; {{ b.tailored_bullet }}
-                            </div>
-                            <div class="bullet-rationale">
-                                💡 <strong>Why this works:</strong> {{ b.rationale }}
-                            </div>
+            <!-- Internships -->
+            {% set all_interns = [] %}
+            {% if tailored.internships %}
+                {% for i in tailored.internships %}{% set _ = all_interns.append(i) %}{% endfor %}
+            {% endif %}
+            {% if tailored.experience %}
+                {% for e in tailored.experience %}
+                    {% if 'intern' in (e.title or '') | lower %}
+                        {% set _ = all_interns.append(e) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if all_interns %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">INTERNSHIPS</h3>
+                {% for intern in all_interns %}
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.25rem;">
+                        <div>
+                            <span style="font-weight: 700; font-size: 0.975rem; color: var(--color-text-main);">{{ intern.title }}</span>
+                            {% if intern.company %}<span style="color: var(--color-text-muted); font-size: 0.9rem;"> — {{ intern.company }}</span>{% endif %}
                         </div>
+                        {% if intern.duration %}<span style="font-size: 0.875rem; color: var(--color-text-muted); font-style: italic; white-space: nowrap;">{{ intern.duration }}</span>{% endif %}
+                    </div>
+                    {% if intern.bullets %}
+                    <ul style="margin: 0.4rem 0 0 1.25rem; padding: 0;">
+                        {% for bullet in intern.bullets %}
+                        <li style="font-size: 0.9rem; line-height: 1.65; color: var(--color-text-main); margin-bottom: 0.2rem;">{{ bullet }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Projects -->
+            {% set proj_list = tailored.projects if tailored.projects else [] %}
+            {% if not proj_list and tailored.bullet_improvements %}
+                <!-- Legacy bullet improvements as project entries -->
+            {% endif %}
+            {% if proj_list %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">PROJECTS</h3>
+                {% for proj in proj_list %}
+                <div style="margin-bottom: 1rem;">
+                    <div>
+                        <span style="font-weight: 700; font-size: 0.975rem; color: var(--color-text-main);">{{ proj.name }}</span>
+                        {% if proj.technologies %}<span style="color: var(--color-primary); font-size: 0.875rem; font-style: italic;"> | {{ proj.technologies }}</span>{% endif %}
+                    </div>
+                    {% if proj.bullets %}
+                    <ul style="margin: 0.4rem 0 0 1.25rem; padding: 0;">
+                        {% for bullet in proj.bullets %}
+                        <li style="font-size: 0.9rem; line-height: 1.65; color: var(--color-text-main); margin-bottom: 0.2rem;">{{ bullet }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% elif resume.sections.projects %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">PROJECTS</h3>
+                <div style="font-size: 0.9rem; line-height: 1.7; white-space: pre-line; color: var(--color-text-main);">{{ resume.sections.projects }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Certifications -->
+            {% if tailored.certifications and tailored.certifications | length > 0 %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">CERTIFICATIONS</h3>
+                <ul style="margin: 0 0 0 1.25rem; padding: 0;">
+                    {% for cert in tailored.certifications %}
+                    <li style="font-size: 0.9rem; line-height: 1.65; color: var(--color-text-main); margin-bottom: 0.2rem;">{{ cert }}</li>
                     {% endfor %}
+                </ul>
+            </div>
+            {% elif resume.sections.certifications %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">CERTIFICATIONS</h3>
+                <div style="font-size: 0.9rem; line-height: 1.7; white-space: pre-line; color: var(--color-text-main);">{{ resume.sections.certifications }}</div>
+            </div>
+            {% endif %}
+
+            <!-- Achievements -->
+            {% if tailored.achievements and tailored.achievements | length > 0 %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">ACHIEVEMENTS & AWARDS</h3>
+                <ul style="margin: 0 0 0 1.25rem; padding: 0;">
+                    {% for ach in tailored.achievements %}
+                    <li style="font-size: 0.9rem; line-height: 1.65; color: var(--color-text-main); margin-bottom: 0.2rem;">{{ ach }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% elif resume.sections.achievements %}
+            <div class="doc-section">
+                <h3 class="doc-section-title">ACHIEVEMENTS & AWARDS</h3>
+                <div style="font-size: 0.9rem; line-height: 1.7; white-space: pre-line; color: var(--color-text-main);">{{ resume.sections.achievements }}</div>
+            </div>
+            {% endif %}
+
+        </div><!-- end .doc-paper -->
+
+        <!-- Skill Gap Advisory (collapsed by default) -->
+        {% if tailored.missing_skills_advisory and tailored.missing_skills_advisory | length > 0 %}
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header-flex">
+                <div class="card-title-icon">
+                    <span class="icon-bubble">💡</span>
+                    <div>
+                        <h3>Skill Gap Advisory</h3>
+                        <p class="text-muted">Skills in the job description not found in your resume — add only if genuine</p>
+                    </div>
                 </div>
             </div>
-
+            <div class="ethical-advisory-box">
+                <span class="advisory-icon">⚠️</span>
+                <div>
+                    <strong>Ethical Reminder:</strong> Only add skills you genuinely possess. HireLens never encourages resume fabrication.
+                </div>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+                {% for advisory in tailored.missing_skills_advisory %}
+                <li style="font-size: 0.9rem; padding: 0.5rem 0.75rem; background: var(--color-warning-bg); border: 1px solid var(--color-warning-border); border-radius: var(--radius-sm); color: var(--color-warning);">
+                    {{ advisory }}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
+        {% endif %}
+
+        <!-- Formatting Tips -->
+        {% if tailored.formatting_tips and tailored.formatting_tips | length > 0 %}
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header-simple">
+                <h3>Formatting Tips</h3>
+                <p class="text-muted">Final polish recommendations for maximum ATS compatibility</p>
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem;">
+                {% for tip in tailored.formatting_tips %}
+                <li style="font-size: 0.9rem; padding: 0.5rem 0.75rem; background: var(--color-primary-light); border: 1px solid var(--color-primary-border); border-radius: var(--radius-sm); color: var(--color-primary);">
+                    ✓ {{ tip }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
 
         <!-- Next Actions Bar -->
         <div class="next-steps-banner">
             <div class="ns-content">
                 <h3>Export Your Application</h3>
-                <p>Generate a targeted cover letter or download the tailored resume in Word format.</p>
+                <p>Download the full tailored resume or generate a personalized cover letter.</p>
             </div>
             <div class="ns-actions">
-                <a href="{{ url_for('download_resume') }}" class="btn btn-primary">Download DOCX</a>
+                <a href="{{ url_for('download_resume') }}" class="btn btn-primary" id="btn-download-resume-bottom">Download DOCX Resume</a>
                 <a href="{{ url_for('cover_letter') }}" class="btn btn-secondary">Generate Cover Letter</a>
                 <a href="{{ url_for('results') }}" class="btn btn-outline">Back to Score</a>
             </div>
